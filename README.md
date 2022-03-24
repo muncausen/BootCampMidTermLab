@@ -1,1 +1,1 @@
-# demo 3
+# This repo will contain excercises from the spring C++ BootCamp

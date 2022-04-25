@@ -1,4 +1,6 @@
-# This repo will contain excercises from the spring C++ BootCamp
+# Demo
+
+This repo will contain excercises from the spring C++ BootCamp
 
 <<<<<<< Updated upstream
 I will uppload code later

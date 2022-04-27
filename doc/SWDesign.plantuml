@@ -1,6 +1,5 @@
 @startuml Swdesign
 left to right direction
-'skinparam sequenceMessageAlign center
 
 package "User Input" {
   [CANTransmitter]
@@ -11,19 +10,14 @@ package "DriveLine Emulator" {
 [Server]
 package DriveLine{
 
-[Server] -->  [Engine]
-[Server] --> [Gearbox]
-[Server] --> [Wheel] 
-[Server] <--> [State]
+[Server] ->  [Engine]
+[Server] -> [Gearbox]
+[Server] -> [Wheel] 
+[Server] <-> [State]
 }
 [CANSender]
 }
-' folder "DriveLine"{
-' [Server] -->  [Engine]
-' [Server] --> [Gearbox]
-' [Server] --> [Wheel] 
-' [Server] ==> [Vehicle State]
-' }
+
 package "Display" {
   [display]
 }
@@ -31,7 +25,5 @@ package "Display" {
 [CANReceiver] --> [Server]
 [Server] -->[CANSender]
 [CANSender] --> [display] : CAN1
-' [Vehicle State] <--  [Engine]
-' [Vehicle State] -- [Gearbox]
-' [Vehicle State] -- [Wheel] 
+
 @enduml

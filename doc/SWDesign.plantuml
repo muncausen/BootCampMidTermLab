@@ -9,21 +9,21 @@ package "User Input" {
 package "DriveLine Emulator" {
 [CANReceiver]
 [Server]
-'package DriveLine{
+package DriveLine{
 
-' [Server] -->  [Engine]
-' [Server] --> [Gearbox]
-' [Server] --> [Wheel] 
-' [Server] <--> [State]
-'}
-[CANSender]
-}
-folder "DriveLine"{
 [Server] -->  [Engine]
 [Server] --> [Gearbox]
 [Server] --> [Wheel] 
-[Server] ==> [Vehicle State]
+[Server] <--> [State]
 }
+[CANSender]
+}
+' folder "DriveLine"{
+' [Server] -->  [Engine]
+' [Server] --> [Gearbox]
+' [Server] --> [Wheel] 
+' [Server] ==> [Vehicle State]
+' }
 package "Display" {
   [display]
 }
@@ -31,7 +31,7 @@ package "Display" {
 [CANReceiver] --> [Server]
 [Server] -->[CANSender]
 [CANSender] --> [display] : CAN1
-[Vehicle State] <--  [Engine]
-[Vehicle State] -- [Gearbox]
-[Vehicle State] -- [Wheel] 
+' [Vehicle State] <--  [Engine]
+' [Vehicle State] -- [Gearbox]
+' [Vehicle State] -- [Wheel] 
 @enduml

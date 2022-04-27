@@ -1,9 +1,0 @@
-@startuml classes
-
-class UserInput {}
-
-class AccPedal {}
-
-
-
-@enduml

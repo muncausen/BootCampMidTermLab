@@ -3,7 +3,7 @@
 add_library(drivelib STATIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/can_receiver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/socketcan.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/src/engine.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp
 #    ${CMAKE_CURRENT_SOURCE_DIR}/src/gear.cpp
 #    ${CMAKE_CURRENT_SOURCE_DIR}/src/socketcan.cpp
 #    ${CMAKE_CURRENT_SOURCE_DIR}/src/wheel.cpp
@@ -19,7 +19,7 @@ PUBLIC
 
 
 add_executable(DriveLine
- ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp) 
+ ${CMAKE_CURRENT_SOURCE_DIR}/../main.cpp) 
  
 #add_executable(runTests test_mini.cpp)
 # Locate GTest

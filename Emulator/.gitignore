@@ -1,0 +1,59 @@
+# Conan caches in CI
+.conan/
+.conan_sp/
+
+# Build folders
+[Bb]uild/
+[Bb]uild_tmp/
+
+# Windows default autosave extension
+*.asv
+
+# OSX / *nix default autosave extension
+*.m~
+
+# Compiled MEX binaries (all platforms)
+*.mex*
+
+# Simulink project
+direction-indicator-control.prj
+resources/
+resourcesBROKEN/
+
+# Simulink project launcher
+OpenProject.bat
+OpenProject.sh
+
+# Simulink code generation folders
+slprj/
+*_autosar_rtw/
+
+# Simulink autosave extension
+*autosave
+
+# Simulink cache files
+*.slxc
+
+# Simulink backups
+*.Backup
+*_BackUp.slx
+
+# MxVDev extensions
+*.mxlog
+*.mxa
+*.mxevt
+*.mxlog
+*.mxcfg
+*.mxconst
+*.mxo
+*.mxtags
+*.mxenum
+
+# Generated docs
+doc/generatedDoc/
+
+# All logfiles
+**/*.log
+
+.cs
+.build

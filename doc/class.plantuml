@@ -1,9 +1,78 @@
 @startuml classes
 
-class UserInput {}
+diamond InputFrame
+diamond OutputFrame
 
-class AccPedal {}
+package UserInput {
+    class BrakePedal {
+        + PedalApplication
+        + IncrementPedal()
+        + DecrementPedal()
+    }
+    class AcceleratorPedal {
+        + PedalApplication
+        + IncrementPedal()
+        + DecrementPedal()
+    }
+    class GearShift {
+        + RequestedGear
+        + UpShift()
+        + DownShift()
+    }
+    class SendInputMessage {
+        + PopulateFrame()
+        + SendFrame()
+    }
+    SendInputMessage -up-> BrakePedal
+    SendInputMessage -up-> AcceleratorPedal
+    SendInputMessage -up-> GearShift
+}
 
+package Server {
+    class Inputs {
+        + GetAcceleratorPedal()
+        + GetBrakePedal()
+        + GetRequestedGear()
+    }
+    class SendOutputMessage {
+        + PopulateFrame()
+        + SendFrame()
+    }
+    class Engine {
+        + EngineSpeed
+        + RequestTorque()
+        - CalculateTorque()
+    }
+    class Gearbox {
+        - GearRatioMap
+        + GetGearRatio()
+    }
+}
 
+package Dashboard {
+    class Speedometer {
+        - CurrentSpeed
+        + DisplaySpeed()
+    }
+    class Tachometer {
+        - CurrentRpm
+        + DisplayRpm()
+    }
+    class GearIndicator {
+        - CurrentGear
+        + DisplayGear()
+    }
+}
+
+SendInputMessage --> InputFrame
+InputFrame --> Inputs
+Inputs --> Engine
+Inputs --> Gearbox
+Engine --> SendOutputMessage
+Gearbox --> SendOutputMessage
+SendOutputMessage --> OutputFrame
+OutputFrame --> Speedometer
+OutputFrame --> Tachometer
+OutputFrame --> GearIndicator
 
 @enduml

@@ -20,18 +20,13 @@ using namespace std;
         uint8_t gear;
     };
     class CanReceiver{
-        private:
-            CanFrame *canframe_ = nullptr;
-//            
         public:
             CanReceiver() = default;
             scpp::SocketCan sockat_can;
             scpp::CanFrame can_fr;
-            void ReadCan();
-            CanFrame* getCanFrame() const;
+            bool OpenCan();
             bool ReceiveCan(); 
             uint8_t prev_cntr{0};
-
     };
 
 //} //namespace CanReceiver

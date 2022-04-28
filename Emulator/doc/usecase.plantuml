@@ -1,7 +1,8 @@
 @startuml uscases
 left to right direction
 
-actor User
+actor "Driver" as user
+actor "Outside Forces" as outside
 
 rectangle "User Input" {
   usecase acc_pedal
@@ -28,13 +29,16 @@ rectangle "Display" {
   usecase gear
 }
 
-User --> acc_pedal
-User --> brake_pedal
-User --> up_shift
-User --> down_shift
+user --> acc_pedal
+user --> brake_pedal
+user --> up_shift
+user --> down_shift
+
+outside ..> engine_speed
+outside ..> calculate_speed
 
 acc_pedal --> engine_speed
-brake_pedal --> engine_speed
+brake_pedal --> calculate_speed
 up_shift --> gear_ratio
 down_shift --> gear_ratio
 

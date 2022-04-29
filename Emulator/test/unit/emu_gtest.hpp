@@ -5,6 +5,7 @@
 #include"can_receiver.hpp"
 #include <iostream>
 #include "server.hpp"
+#include "engine.hpp"
 using namespace std;
 
 class TestEmulator : public ::testing::Test
@@ -21,5 +22,6 @@ class TestEmulator : public ::testing::Test
         CanReceiver *can_receiver_ = nullptr;
         Server* server_ = nullptr;
         CanFrame testcfr;
+        Engine* engine = nullptr;
         
 };

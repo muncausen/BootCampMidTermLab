@@ -11,6 +11,7 @@ find_package(Threads REQUIRED)
 add_library(emu_test_lib STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/can_receiver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/socketcan.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/engine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/server.cpp
 )
 ## Include directories

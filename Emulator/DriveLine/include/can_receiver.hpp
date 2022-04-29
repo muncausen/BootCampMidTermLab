@@ -21,12 +21,14 @@ using namespace std;
     };
     class CanReceiver{
         public:
+            CanFrame test_cfr{};
             CanReceiver() = default;
             scpp::SocketCan sockat_can;
             scpp::CanFrame can_fr;
             bool OpenCan();
             bool ReceiveCan(); 
             uint8_t prev_cntr{0};
+            CanFrame getCanFrame();
     };
 
 //} //namespace CanReceiver

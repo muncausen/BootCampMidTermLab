@@ -31,10 +31,14 @@ bool CanReceiver::ReceiveCan(){
     }
     Server *server_ = nullptr;
     server_ = new Server;
-    if ((can_frame.frame_cntr != prev_cntr) && (can_frame.ignition == true)){
+//    if ((can_frame.frame_cntr != prev_cntr) && (can_frame.ignition == true)){
+        test_cfr = can_frame;
         server_->UpdateCanData(can_frame);
         prev_cntr = can_frame.frame_cntr;
-    }
+//    }
 
     return can_frame.ignition;
     };
+CanFrame CanReceiver::getCanFrame(){
+    return test_cfr;
+}

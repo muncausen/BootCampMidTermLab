@@ -33,7 +33,7 @@ bool CanReceiver::ReceiveCan(){
     server_ = new Server;
 //    if ((can_frame.frame_cntr != prev_cntr) && (can_frame.ignition == true)){
         test_cfr = can_frame;
-        server_->UpdateCanData(can_frame);
+        server_->StartEmulate(can_frame);
         prev_cntr = can_frame.frame_cntr;
 //    }
 

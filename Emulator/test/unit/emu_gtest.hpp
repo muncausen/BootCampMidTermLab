@@ -20,5 +20,6 @@ class TestEmulator : public ::testing::Test
         }
         CanReceiver *can_receiver_ = nullptr;
         Server* server_ = nullptr;
+        CanFrame testcfr;
         
 };

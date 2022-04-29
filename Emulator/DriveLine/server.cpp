@@ -1,6 +1,6 @@
 #include "server.hpp"
 
-bool Server::UpdateCanData(CanFrame& can_frame){
+bool Server::StartEmulate(CanFrame& can_frame){
     bool isCanUpdated{false};
     if (can_frame.frame_cntr != prev_cntr){
         cout << "Ignition: " << static_cast<int>(can_frame.ignition) << endl;

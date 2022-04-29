@@ -66,7 +66,7 @@ bool UserInput::Cmd(const int& ch) {
 
     case key::k_B:
     case key::k_b:
-      this->SetThrottle(pedal::k_zero); // Abort cruise control!
+      this->SetThrottle(pedal::k_zero);  // Abort cruise control!
       this->SetBrake(pedal::k_one_hundred);
       break;
 
@@ -96,30 +96,30 @@ bool UserInput::Cmd(const int& ch) {
 // Sets throttle value with sanity check.
 void UserInput::SetThrottle(const int8_t& th) {
   if (pedal::k_zero <= th && th <= pedal::k_one_hundred) {
-    this->current_values.throttle = th;
-    std::cout << "Throttle: " << static_cast<int>(this->current_values.throttle) << " %\n";
+    this->throttle = th;
+    std::cout << "Throttle: " << static_cast<int>(this->throttle) << " %\n";
   }
 }
 
 // Sets brake value with sanity check.
 void UserInput::SetBrake(const int8_t& bk) {
   if (pedal::k_zero <= bk && bk <= pedal::k_one_hundred) {
-    this->current_values.brake = bk;
-    std::cout << "Brake: " << static_cast<int>(this->current_values.brake) << " %\n";
+    this->brake = bk;
+    std::cout << "Brake: " << static_cast<int>(this->brake) << " %\n";
   }
 }
 
 // Sets gear value.
 void UserInput::SetGear(const int& gr) {
   if (KEY_DOWN == gr) {
-    if (this->current_values.gear > gear::k_drive) this->current_values.gear--;
+    if (this->gear > gear::k_drive) this->gear--;
   } else if (KEY_UP) {
-    if (this->current_values.gear < gear::k_park) this->current_values.gear++;
+    if (this->gear < gear::k_park) this->gear++;
   } else {
     std::cout << "Gear error! Really weird gear request.\n";
   }
 
-  switch (this->current_values.gear) {
+  switch (this->gear) {
     case gear::k_park:
       std::cout << "Gear lever in P.\n";
       break;

@@ -50,11 +50,9 @@ const int8_t k_drive = -3;
 class UserInput {
  public:
   // Input request variables
-  struct CurrentValues {
-    int8_t throttle{};
-    int8_t brake{};
-    int8_t gear{};
-  } current_values;
+  int8_t throttle{};
+  int8_t brake{};
+  int8_t gear{};
 
   // Input char
   int ch{};

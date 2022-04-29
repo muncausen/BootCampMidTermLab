@@ -1,0 +1,51 @@
+@startuml uscases
+left to right direction
+
+actor "Driver" as user
+actor "Outside Forces" as outside
+
+rectangle "User Input" {
+  usecase acc_pedal
+  usecase brake_pedal
+  usecase up_shift
+  usecase down_shift
+}
+
+rectangle "Engine Emulator" {
+  usecase engine_speed
+}
+
+rectangle "Transmission Emulator" {
+  usecase gear_ratio
+}
+
+rectangle "Vehicle State" {
+  usecase calculate_speed
+}
+
+rectangle "Display" {
+  usecase speed
+  usecase rpm
+  usecase gear
+}
+
+user --> acc_pedal
+user --> brake_pedal
+user --> up_shift
+user --> down_shift
+
+outside ..> engine_speed
+outside ..> calculate_speed
+
+acc_pedal --> engine_speed
+brake_pedal --> calculate_speed
+up_shift --> gear_ratio
+down_shift --> gear_ratio
+
+engine_speed --> calculate_speed
+engine_speed --> rpm
+gear_ratio --> calculate_speed
+gear_ratio --> gear
+calculate_speed --> speed
+
+@enduml

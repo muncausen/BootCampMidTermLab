@@ -9,7 +9,7 @@
 
 #include <chrono>
 
-void SendToCan(UserInput& ui) {
+void SendToCan(const UserInput& ui) {
   scpp::SocketCan socket_can;
 
   if (socket_can.open("vcan0") != scpp::STATUS_OK) {
@@ -32,7 +32,7 @@ void SendToCan(UserInput& ui) {
     cf_to_write.data[5] = 0;
     cf_to_write.data[6] = 0;
     cf_to_write.data[7] = 0;
-    
+
     auto write_sc_status = socket_can.write(cf_to_write);
     if (write_sc_status != scpp::STATUS_OK)
       printf("something went wrong on socket write, error code : %d \n", int32_t(write_sc_status));

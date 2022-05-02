@@ -4,28 +4,23 @@ diamond InputFrame
 diamond OutputFrame
 
 package UserInput {
-    class BrakePedal {
-        + PedalApplication
-        + IncrementPedal()
-        + DecrementPedal()
-    }
-    class AcceleratorPedal {
-        + PedalApplication
-        + IncrementPedal()
-        + DecrementPedal()
-    }
-    class GearShift {
-        + RequestedGear
-        + UpShift()
-        + DownShift()
+    class UserInput {
+        + Ignition ignition
+        + Gear gear
+        + Pedal throttle
+        + Pedal brake
+        + Blinker blinker
+        + SetIgnition()
+        + SetGear()
+        + SetThrottle()
+        + SetBrake()
+        + SetBlinker()
     }
     class SendInputMessage {
         + PopulateFrame()
         + SendFrame()
     }
-    SendInputMessage -up-> BrakePedal
-    SendInputMessage -up-> AcceleratorPedal
-    SendInputMessage -up-> GearShift
+    SendInputMessage -up-> UserInput
 }
 
 package Server {
@@ -43,7 +38,7 @@ package Server {
         + RequestTorque()
         - CalculateTorque()
     }
-    class Gearbox {
+    class Transmission {
         - GearRatioMap
         + GetGearRatio()
     }
@@ -67,9 +62,9 @@ package Dashboard {
 SendInputMessage --> InputFrame
 InputFrame --> Inputs
 Inputs --> Engine
-Inputs --> Gearbox
+Inputs --> Transmission
 Engine --> SendOutputMessage
-Gearbox --> SendOutputMessage
+Transmission --> SendOutputMessage
 SendOutputMessage --> OutputFrame
 OutputFrame --> Speedometer
 OutputFrame --> Tachometer

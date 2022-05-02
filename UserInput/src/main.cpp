@@ -9,6 +9,11 @@
 
 #include <chrono>
 
+/*!
+ * \brief Populates a can frame and sends it on the CAN bus.
+ *
+ * \param ui The user input object containing the info to send.
+ */
 void SendToCan(const UserInput& ui) {
   scpp::SocketCan socket_can;
 
@@ -25,9 +30,9 @@ void SendToCan(const UserInput& ui) {
     cf_to_write.len = 8;
 
     cf_to_write.data[0]++;  // put data from input here
-    cf_to_write.data[1] = ui.throttle;
-    cf_to_write.data[2] = ui.brake;
-    cf_to_write.data[3] = ui.gear;
+    cf_to_write.data[1] = static_cast<uint8_t>(ui.throttle);
+    cf_to_write.data[2] = static_cast<uint8_t>(ui.brake);
+    cf_to_write.data[3] = static_cast<uint8_t>(ui.gear);
     cf_to_write.data[4] = 0;
     cf_to_write.data[5] = 0;
     cf_to_write.data[6] = 0;
@@ -46,7 +51,6 @@ int main() {
   // Initiate persistent variables.
   bool run{true};
   UserInput ui{};
-  int rc{};
 
   InitNcurses();
 

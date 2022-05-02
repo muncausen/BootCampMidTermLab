@@ -27,51 +27,66 @@ const int k_n = 110;
 const int k_q = 113;
 }  // namespace key
 
-enum class gear {
-  park = 0,
-  reverse,
-  neutral,
-  drive,
+/*!
+ * \brief Enum representation of ignition state.
+ *
+ */
+enum class Ignition
+{
+  kOff = 0,
+  kOn,
 };
 
-namespace pedal {
-const int8_t k_zero = 0;
-const int8_t k_ten = 10;
-const int8_t k_twenty = 20;
-const int8_t k_thirty = 30;
-const int8_t k_forty = 40;
-const int8_t k_fifty = 50;
-const int8_t k_sixty = 60;
-const int8_t k_seventy = 70;
-const int8_t k_eighty = 80;
-const int8_t k_ninety = 90;
-const int8_t k_one_hundred = 100;
-}  // namespace pedal
+/*!
+ * \brief Enum representation of gear selector position.
+ *
+ */
+enum class Gear {
+  kPark = 0,
+  kReverse,
+  kNeutral,
+  kDrive,
+};
 
-namespace ignition
-{
-  const int8_t k_off = 0;
-  const int8_t k_on = 1;
-} // namespace ignition
+enum class Pedal {
+  kZero = 0,
+  kTen = 10,
+  kTwenty = 20,
+  kThirty = 30,
+  kForty = 40,
+  kFifty = 50,
+  kSixty = 60,
+  kSeventy = 70,
+  kEighty = 80,
+  kNinety = 90,
+  kOneHundred = 100,
+};
+
+enum class Blinker {
+  kOff = 0,
+  kRight,
+  kLeft,
+  kWarning,
+};
 
 class UserInput {
  public:
   // Input request variables
-  int8_t ignition{};
-  int8_t gear{};
-  int8_t throttle{};
-  int8_t brake{};
-  int8_t blinker{};
+  Ignition ignition{};
+  Gear gear{};
+  Pedal throttle{};
+  Pedal brake{};
+  Blinker blinker{};
 
   // Input char
   int ch{};
 
   bool Cmd(const int&);
-  void SetIgnition(const int8_t&);
+  void SetIgnition(const Ignition&);
   void SetGear(const int&);
-  void SetThrottle(const int8_t&);
-  void SetBrake(const int8_t&);
-  void SetBlinker(const int8_t&);
+  void SetThrottle(const Pedal&);
+  void SetBrake(const Pedal&);
+  void SetBlinker(const Blinker&);
 };
 
 void InitNcurses();

@@ -1,6 +1,6 @@
 #include "emu_gtest.hpp"
 #include <iostream>
-
+#include<thread>
 using namespace std;
 
 
@@ -10,8 +10,13 @@ void TestEmulator::SetUp(){
     can_receiver_->OpenCan();
     server_ = new Server();
     engine = new Engine();
+    thread opencan_thread(&CanReceiver::OpenCan, can_receiver_);
+    opencan_thread.join();
 while (testcfr.frame_cntr == 0) {
-        can_receiver_->ReceiveCan();
+        thread receive_can_thread(&CanReceiver::ReceiveCan, can_receiver_);
+        receive_can_thread.join();
+        thread start_emulate(&Server::StartEmulate, server_, can_receiver_->getCanFrame());
+        start_emulate.join();
         testcfr = can_receiver_->getCanFrame();
     };
 }

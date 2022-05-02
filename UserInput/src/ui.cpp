@@ -1,5 +1,6 @@
 #include "ui.hpp"
 
+#include <cstring>
 #include <iostream>
 
 // Initiates required setup for ncurses
@@ -93,6 +94,57 @@ bool UserInput::Cmd(const int& ch) {
   return run;
 }
 
+void UserInput::SetIgnition(const int8_t& ig) {
+  switch (ig) {
+    case ignition::k_off:
+      this->ignition = ignition::k_off;
+      std::cout << "Ignition off.\n";
+      break;
+
+    case ignition::k_on:
+      std::cout << "Ignition on.\n";
+      this->ignition = ignition::k_on;
+      break;
+
+    default:
+      std::cout << "Ignition error! Unknown ignition state\n";
+      break;
+  }
+}
+
+// Sets gear value.
+void UserInput::SetGear(const int& gr) {
+  if (KEY_DOWN == gr) {
+    if (this->gear < static_cast<int8_t>(gear::drive)) this->gear++;
+  } else if (KEY_UP) {
+    if (this->gear > static_cast<int8_t>(gear::park)) this->gear--;
+  } else {
+    std::cout << "Gear error! Really weird gear request.\n";
+  }
+
+  switch (this->gear) {
+    case static_cast<int8_t>(gear::park):
+      std::cout << "Gear lever in P.\n";
+      break;
+
+    case static_cast<int8_t>(gear::reverse):
+      std::cout << "Gear lever in R.\n";
+      break;
+
+    case static_cast<int8_t>(gear::neutral):
+      std::cout << "Gear lever in N.\n";
+      break;
+
+    case static_cast<int8_t>(gear::drive):
+      std::cout << "Gear lever in D.\n";
+      break;
+
+    default:
+      std::cout << "Gear error! Really weird gear lever position.\n";
+      break;
+  }
+}
+
 // Sets throttle value with sanity check.
 void UserInput::SetThrottle(const int8_t& th) {
   if (pedal::k_zero <= th && th <= pedal::k_one_hundred) {
@@ -106,38 +158,5 @@ void UserInput::SetBrake(const int8_t& bk) {
   if (pedal::k_zero <= bk && bk <= pedal::k_one_hundred) {
     this->brake = bk;
     std::cout << "Brake: " << static_cast<int>(this->brake) << " %\n";
-  }
-}
-
-// Sets gear value.
-void UserInput::SetGear(const int& gr) {
-  if (KEY_DOWN == gr) {
-    if (this->gear > gear::k_drive) this->gear--;
-  } else if (KEY_UP) {
-    if (this->gear < gear::k_park) this->gear++;
-  } else {
-    std::cout << "Gear error! Really weird gear request.\n";
-  }
-
-  switch (this->gear) {
-    case gear::k_park:
-      std::cout << "Gear lever in P.\n";
-      break;
-
-    case gear::k_reverse:
-      std::cout << "Gear lever in R.\n";
-      break;
-
-    case gear::k_neutral:
-      std::cout << "Gear lever in N.\n";
-      break;
-
-    case gear::k_drive:
-      std::cout << "Gear lever in D.\n";
-      break;
-
-    default:
-      std::cout << "Gear error! Really weird gear lever position.\n";
-      break;
   }
 }

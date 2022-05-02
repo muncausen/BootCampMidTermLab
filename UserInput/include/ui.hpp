@@ -1,5 +1,6 @@
 
 #include <curses.h>
+#include "candb.hpp"
 
 #ifndef SRC_UI_UI_HPP
 #define SRC_UI_UI_HPP
@@ -26,6 +27,13 @@ const int k_n = 110;
 const int k_q = 113;
 }  // namespace key
 
+enum class gear {
+  park = 0,
+  reverse,
+  neutral,
+  drive,
+};
+
 namespace pedal {
 const int8_t k_zero = 0;
 const int8_t k_ten = 10;
@@ -40,27 +48,30 @@ const int8_t k_ninety = 90;
 const int8_t k_one_hundred = 100;
 }  // namespace pedal
 
-namespace gear {
-const int8_t k_park = 0;
-const int8_t k_reverse = -1;
-const int8_t k_neutral = -2;
-const int8_t k_drive = -3;
-}  // namespace gear
+namespace ignition
+{
+  const int8_t k_off = 0;
+  const int8_t k_on = 1;
+} // namespace ignition
 
 class UserInput {
  public:
   // Input request variables
+  int8_t ignition{};
+  int8_t gear{};
   int8_t throttle{};
   int8_t brake{};
-  int8_t gear{};
+  int8_t blinker{};
 
   // Input char
   int ch{};
 
   bool Cmd(const int&);
+  void SetIgnition(const int8_t&);
+  void SetGear(const int&);
   void SetThrottle(const int8_t&);
   void SetBrake(const int8_t&);
-  void SetGear(const int&);
+  void SetBlinker(const int8_t&);
 };
 
 void InitNcurses();

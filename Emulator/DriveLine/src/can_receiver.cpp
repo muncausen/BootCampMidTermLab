@@ -29,11 +29,11 @@ bool CanReceiver::ReceiveCan(){
         can_frame.brake_application = can_fr.data[3];
         can_frame.gear = can_fr.data[4];
     }
-    Server *server_ = nullptr;
-    server_ = new Server;
+    // Server *server_ = nullptr;
+    // server_ = new Server;
 //    if ((can_frame.frame_cntr != prev_cntr) && (can_frame.ignition == true)){
         test_cfr = can_frame;
-        server_->StartEmulate(can_frame);
+//        server_->StartEmulate(can_frame);
         prev_cntr = can_frame.frame_cntr;
 //    }
 

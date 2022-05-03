@@ -12,9 +12,7 @@ class Server{
          
     public:
         Server() = default;
-        bool StartEmulate(CanFrame& can_frame);
-        scpp::SocketCan sockat_can;
-        scpp::CanFrame can_fr;
+        bool StartEmulate(const CanFrame& can_frame);
         uint8_t prev_cntr{0};
         Engine* engine;
         uint8_t engine_rpm;

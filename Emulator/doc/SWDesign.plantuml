@@ -2,28 +2,23 @@
 left to right direction
 
 package "User Input" {
-  [CANTransmitter]
+  [Keyboard] --> [CANTransmitter]
 }
 
-package "DriveLine Emulator" {
-[CANReceiver]
-[Server]
-package DriveLine{
-
-[Server] ->  [Engine]
-[Server] -> [Gearbox]
-[Server] -> [Wheel] 
-[Server] <-> [State]
-}
-[CANSender]
+package "DriveLine" {
+  [CANTransiever]
+  [Server]
+  [Server] <-> [Driveline Simulator]
 }
 
 package "Display" {
+  [CANReciever]
   [display]
 }
-[CANTransmitter] --> [CANReceiver] : CAN0
-[CANReceiver] --> [Server]
-[Server] -->[CANSender]
-[CANSender] --> [display] : CAN1
+
+[CANTransmitter] --> [CANTransiever] : vcan0
+[CANTransiever] <-> [Server]
+[CANTransiever] --> [CANReciever] : vcan0
+[CANReciever] --> [display]
 
 @enduml

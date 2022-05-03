@@ -8,29 +8,32 @@
 using namespace std;
 
 //namespace UserInput {
-
-    struct CanFrame{
-        uint8_t frame_id;
-        uint8_t frame_dlc;
-        bool update_bit;
+    struct CanUIData {
         uint8_t frame_cntr;
-        bool ignition;
-        uint8_t acceleration_req; // positive: accelerate, negative: brake
-        uint8_t brake_application;
+        uint8_t ignition;
         uint8_t gear;
+        uint8_t acceleration_req;
+        uint8_t brake_req;
+        uint8_t blinkers;
     };
-    class CanReceiver{
+    struct CanInFrame{
+        uint32_t can_id;
+        uint8_t can_dlc;
+        CanUIData can_data;
+    };
+    class CanTranceiver{
         public:
-            CanFrame test_cfr{};
-            CanReceiver() = default;
+            CanTranceiver() = default;
+            CanInFrame can_frame{};
             scpp::SocketCan sockat_can;
             scpp::CanFrame can_fr;
             bool OpenCan();
-            bool ReceiveCan(); 
+            bool CanFromUI(); 
+            bool CanToDisplay(const CanUIData&); 
             uint8_t prev_cntr{0};
-            CanFrame getCanFrame();
+            CanUIData getCanFrame();
     };
-
+    
 //} //namespace CanReceiver
 
 // 

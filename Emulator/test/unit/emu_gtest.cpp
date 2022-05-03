@@ -6,14 +6,14 @@ using namespace std;
 
 void TestEmulator::SetUp(){
     cout << "SetUp:: " << endl;
-    can_receiver_ = new CanReceiver();
+    can_receiver_ = new CanTranceiver();
     can_receiver_->OpenCan();
     server_ = new Server();
     engine = new Engine();
-    thread opencan_thread(&CanReceiver::OpenCan, can_receiver_);
+    thread opencan_thread(&CanTranceiver::OpenCan, can_receiver_);
     opencan_thread.join();
 while (testcfr.frame_cntr == 0) {
-        thread receive_can_thread(&CanReceiver::ReceiveCan, can_receiver_);
+        thread receive_can_thread(&CanTranceiver::CanFromUI, can_receiver_);
         receive_can_thread.join();
         thread start_emulate(&Server::StartEmulate, server_, can_receiver_->getCanFrame());
         start_emulate.join();

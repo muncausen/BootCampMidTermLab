@@ -6,17 +6,18 @@
 using namespace std;
 
 int main(){
-    CanReceiver *can_receiver_ = nullptr;
-    can_receiver_ = new CanReceiver();
+    CanTranceiver *can_tranceiver_ = nullptr;
+    can_tranceiver_ = new CanTranceiver();
      Server *server_ = nullptr;
      server_ = new Server;
     cout << "MAIN is runing..." << endl;
-    thread opencan_thread(&CanReceiver::OpenCan, can_receiver_);
+    thread opencan_thread(&CanTranceiver::OpenCan, can_tranceiver_);
     opencan_thread.join();
     while (true){
-        thread receive_can_thread(&CanReceiver::ReceiveCan, can_receiver_);
+        thread receive_can_thread(&CanTranceiver::CanFromUI, can_tranceiver_);
+//        printf("Cntr : %d \n", can_tranceiver_->getCanFrame().frame_cntr);
+        thread start_emulate(&Server::StartEmulate, server_, can_tranceiver_->getCanFrame());
         receive_can_thread.join();
-        thread start_emulate(&Server::StartEmulate, server_, can_receiver_->getCanFrame());
         start_emulate.join();
     }
 }

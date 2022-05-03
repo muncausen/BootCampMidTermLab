@@ -1,6 +1,5 @@
 #include "ui.hpp"
 
-#include <cstring>
 #include <iostream>
 
 /*!
@@ -104,6 +103,15 @@ bool UserInput::Cmd(const int& ch) {
   return run;
 }
 
+void UserInput::UpdateCanFrameBitfield() {
+  this->can_frame_bitfield.frame_counter++;
+  this->can_frame_bitfield.ignition = static_cast<uint>(this->ignition);
+  this->can_frame_bitfield.gear_select = static_cast<uint>(this->gear_selection);
+  this->can_frame_bitfield.throttle = static_cast<uint>(this->throttle);
+  this->can_frame_bitfield.brake = static_cast<uint>(this->brake);
+  this->can_frame_bitfield.blinkers = static_cast<uint>(this->blinker);
+}
+
 /*!
  * \brief Sets the value of ignition state.
  *
@@ -136,26 +144,26 @@ void UserInput::SetGear(const int& gr) {
   std::string curr_gear{};
 
   if (KEY_DOWN == gr) {
-    if (Gear::kPark == this->gear) {
-      this->gear = Gear::kReverse;
+    if (Gear::kPark == this->gear_selection) {
+      this->gear_selection = Gear::kReverse;
       curr_gear = "R";
-    } else if (Gear::kReverse == this->gear) {
-      this->gear = Gear::kNeutral;
+    } else if (Gear::kReverse == this->gear_selection) {
+      this->gear_selection = Gear::kNeutral;
       curr_gear = "N";
-    } else if (Gear::kNeutral == this->gear) {
-      this->gear = Gear::kDrive;
+    } else if (Gear::kNeutral == this->gear_selection) {
+      this->gear_selection = Gear::kDrive;
       curr_gear = "D";
     }
     std::cout << "Gear lever in " << curr_gear << "\n";
   } else if (KEY_UP == gr) {
-    if (Gear::kDrive == this->gear) {
-      this->gear = Gear::kNeutral;
+    if (Gear::kDrive == this->gear_selection) {
+      this->gear_selection = Gear::kNeutral;
       curr_gear = "N";
-    } else if (Gear::kNeutral == this->gear) {
-      this->gear = Gear::kReverse;
+    } else if (Gear::kNeutral == this->gear_selection) {
+      this->gear_selection = Gear::kReverse;
       curr_gear = "R";
-    } else if (Gear::kReverse == this->gear) {
-      this->gear = Gear::kPark;
+    } else if (Gear::kReverse == this->gear_selection) {
+      this->gear_selection = Gear::kPark;
       curr_gear = "P";
     }
     std::cout << "Gear lever in " << curr_gear << "\n";

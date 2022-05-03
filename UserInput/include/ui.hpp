@@ -48,6 +48,10 @@ enum class Gear {
   kDrive,
 };
 
+/*!
+ * \brief Enum representation of pedal input in 10% increments.
+ *
+ */
 enum class Pedal {
   kZero = 0,
   kTen = 10,
@@ -62,6 +66,10 @@ enum class Pedal {
   kOneHundred = 100,
 };
 
+/*!
+ * \brief Enum representation of blinker state.
+ *
+ */
 enum class Blinker {
   kOff = 0,
   kRight,
@@ -69,19 +77,26 @@ enum class Blinker {
   kWarning,
 };
 
+/*!
+ * \brief Class to hold user inputs and the methods to set them.
+ *
+ */
 class UserInput {
  public:
   // Input request variables
   Ignition ignition{};
-  Gear gear{};
+  Gear gear_selection{};
   Pedal throttle{};
   Pedal brake{};
   Blinker blinker{};
+
+  UserInputCanFrame can_frame_bitfield{};
 
   // Input char
   int ch{};
 
   bool Cmd(const int&);
+  void UpdateCanFrameBitfield();
   void SetIgnition(const Ignition&);
   void SetGear(const int&);
   void SetThrottle(const Pedal&);

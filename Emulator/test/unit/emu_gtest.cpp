@@ -19,15 +19,15 @@ void TestEmulator::TearDown(){
 }
 
 TEST_F(TestEmulator, CanReceived){
-    
+
     EXPECT_EQ(testcfr.frame_cntr, 12);
 }
 TEST_F(TestEmulator, carStatus){
-    
+
     EXPECT_EQ(testcfr.ignition, 1);
 }
 // TEST_F(TestEmulator, EngineRPM){
-    
+
 //     EXPECT_EQ(engine->getRpm(), 150);
 // }
 

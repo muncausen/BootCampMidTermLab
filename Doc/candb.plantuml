@@ -1,0 +1,21 @@
+@startuml CAN_DB
+
+class "User Input CAN Frame" {
+  "Frame Counter": 4
+  "Ignition": 2
+  "Gear Selection": 4
+  "Throttle": 8
+  "Brake": 8
+  "Blinkers": 2
+}
+
+class "Instrumentation CAN Frame" {
+  "Frame Counter": 4
+  "Ignition": 2
+  "Gear Selection": 4
+  "Speed": 8
+  "RPM": 8
+  "Blinkers": 2
+}
+
+@enduml

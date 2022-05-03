@@ -36,11 +36,11 @@ bool CanReceiver::ReceiveCan(){
         can_mutex.unlock();
         Server *server_ = nullptr;
         server_ = new Server;
-        if ((can_frame.frame_cntr != prev_cntr) && (can_frame.ignition == true)){
-            test_cfr = can_frame;
-//            server_->StartEmulate(can_frame);
-            prev_cntr = can_frame.frame_cntr;
-        }
+//         if ((can_frame.frame_cntr != prev_cntr) && (can_frame.ignition == true)){
+//             test_cfr = can_frame;
+// //            server_->StartEmulate(can_frame);
+//             prev_cntr = can_frame.frame_cntr;
+//         }
     return can_frame.ignition;
     };
 CanFrame CanReceiver::getCanFrame(){

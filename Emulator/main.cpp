@@ -19,6 +19,4 @@ int main(){
         thread start_emulate(&Server::StartEmulate, server_, can_receiver_->getCanFrame());
         start_emulate.join();
     }
-
-    
 }

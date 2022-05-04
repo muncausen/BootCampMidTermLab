@@ -9,24 +9,3 @@ project(BootCampProject
 
 add_subdirectory(UserInput)
 add_subdirectory(Emulator)
-
-# add_executable(ui
-#   UserInput/src/main.cpp
-#   UserInput/src/ui.cpp
-#   Common/src/socketcan.cpp
-# )
-
-# target_compile_options(ui PUBLIC
-#   -Wall
-#   -Werror
-# )
-
-# target_link_libraries(ui PUBLIC
-#   ncurses
-#   pthread
-# )
-
-# target_include_directories(ui PUBLIC
-#   "Common/include"
-#   "UserInput/include"
-# )

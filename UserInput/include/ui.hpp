@@ -1,9 +1,11 @@
-
 #include <curses.h>
+
 #include "candb.hpp"
 
 #ifndef SRC_UI_UI_HPP
 #define SRC_UI_UI_HPP
+
+namespace ui {
 
 // Constants for key inputs
 namespace key {
@@ -37,8 +39,7 @@ const int k_r = 114;
  * \brief Enum representation of ignition state.
  *
  */
-enum class Ignition
-{
+enum class Ignition {
   kOff = 0,
   kOn,
 };
@@ -111,5 +112,8 @@ class UserInput {
 };
 
 void InitNcurses();
+void SendToCan(const UserInput& ui);
+
+}  // namespace ui
 
 #endif  // SRC_UI_UI_HPP

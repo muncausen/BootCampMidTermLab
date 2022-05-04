@@ -13,12 +13,6 @@ add_executable(ui
   ../Common/src/socketcan.cpp
 )
 
-target_compile_options(ui
-PUBLIC
-  -Wall
-  -Werror
-)
-
 target_link_libraries(ui
 PUBLIC
   ncurses

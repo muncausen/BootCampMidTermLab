@@ -9,3 +9,10 @@ project(BootCampProject
 
 add_subdirectory(UserInput)
 add_subdirectory(Emulator)
+
+target_compile_options(ui
+PUBLIC
+  -Wall
+  -Werror
+  -Wpedantic
+)

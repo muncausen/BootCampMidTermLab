@@ -50,7 +50,7 @@ void SendToCan(const UserInput& ui) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
-// Command handling function
+
 /*!
  * \brief Command handling function
  *

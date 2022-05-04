@@ -18,13 +18,19 @@ const int k_7 = 55;
 const int k_8 = 56;
 const int k_9 = 57;
 const int k_B = 66;
+const int k_D = 68;
 const int k_F = 70;
 const int k_N = 78;
+const int k_P = 80;
 const int k_Q = 81;
+const int k_R = 82;
 const int k_b = 98;
+const int k_d = 100;
 const int k_f = 102;
 const int k_n = 110;
+const int k_p = 112;
 const int k_q = 113;
+const int k_r = 114;
 }  // namespace key
 
 /*!

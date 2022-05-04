@@ -1,4 +1,3 @@
-# add_subdirectory(src/mocks)
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,6 +13,7 @@ add_library(emu_test_lib STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/engine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/server.cpp
 )
+
 ## Include directories
 target_include_directories(
     emu_test_lib
@@ -23,7 +23,7 @@ PUBLIC
 )
 
 add_executable(${TEST_NAME}
- ${CMAKE_CURRENT_SOURCE_DIR}/unit/emu_gtest.cpp) 
+ ${CMAKE_CURRENT_SOURCE_DIR}/unit/emu_gtest.cpp)
 
 ## Link libraries
 target_link_libraries(${TEST_NAME}
@@ -31,7 +31,6 @@ PUBLIC
     emu_test_lib
     gtest
     gtest_main
-    gmock
     ${GTEST_LIBRARIES} pthread)
 
 ## Add test suite to available tests

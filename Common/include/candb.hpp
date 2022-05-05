@@ -1,4 +1,5 @@
-
+#ifndef CANDB_HPP_
+#define CANDB_HPP_
 struct UserInputCanFrame {
   unsigned frame_counter : 4;
   unsigned ignition : 2;
@@ -16,3 +17,4 @@ struct DisplayCanFrame {
   unsigned rpm : 8;
   unsigned blinkers : 2;
 };
+#endif

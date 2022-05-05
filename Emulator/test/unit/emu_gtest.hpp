@@ -14,14 +14,14 @@ class TestEmulator : public ::testing::Test
         TestEmulator() = default;
         void SetUp() override;
         void TearDown() override;
-        bool UpdateCanData(CanFrame& can_frame){
-            CanFrame test_cfr;
-            test_cfr.frame_cntr = can_frame.frame_cntr;
-            cout << "TEST:: Frame_Cntr: " << test_cfr.frame_cntr << endl;
+        bool UpdateCanData(UserInputCanFrame& can_ui_frame){
+            UserInputCanFrame test_cfr;
+            test_cfr.frame_counter = can_ui_frame.frame_counter;
+            cout << "TEST:: Frame_Cntr: " << test_cfr.frame_counter << endl;
         }
-        CanReceiver *can_receiver_ = nullptr;
+        CanTranceiver *can_receiver_ = nullptr;
         Server* server_ = nullptr;
-        CanFrame testcfr;
+        UserInputCanFrame testcfr;
         Engine* engine = nullptr;
         
 };

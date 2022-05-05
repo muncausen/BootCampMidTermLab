@@ -5,32 +5,50 @@
 
 #include <memory>
 #include<iostream>
+#include<candb.hpp>
 using namespace std;
 
 //namespace UserInput {
-
-    struct CanFrame{
-        uint8_t frame_id;
-        uint8_t frame_dlc;
-        bool update_bit;
+    struct CanUIData {
         uint8_t frame_cntr;
-        bool ignition;
-        uint8_t acceleration_req; // positive: accelerate, negative: brake
-        uint8_t brake_application;
+        uint8_t ignition;
         uint8_t gear;
+        uint8_t acceleration_req;
+        uint8_t brake_req;
+        uint8_t blinkers;
     };
-    class CanReceiver{
+    struct CanDispData {
+        uint8_t frame_cntr;
+        uint8_t ignition;
+        uint8_t gear;
+        uint8_t speed;
+        uint8_t rpm;
+        uint8_t blinkers;
+    };
+    struct CanUIFrame{
+        uint32_t can_id;
+        uint8_t can_dlc;
+        UserInputCanFrame can_data;
+    };
+    struct CandispFrame{
+        uint32_t can_id;
+        uint8_t can_dlc;
+        CanDispData can_data;
+    };
+    class CanTranceiver{
         public:
-            CanFrame test_cfr{};
-            CanReceiver() = default;
+            CanTranceiver() = default;
+            CanUIFrame can_ui_frame{};
+            CanDispData can_data; // test using shift and & methode
             scpp::SocketCan sockat_can;
             scpp::CanFrame can_fr;
             bool OpenCan();
-            bool ReceiveCan(); 
+            bool CanFromUI(); 
+            bool CanToDisplay(const DisplayCanFrame&); 
             uint8_t prev_cntr{0};
-            CanFrame getCanFrame();
+            UserInputCanFrame getCanFrame();
     };
-
+    
 //} //namespace CanReceiver
 
 // 

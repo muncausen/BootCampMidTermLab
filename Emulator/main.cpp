@@ -16,8 +16,8 @@ int main(){
     while (true){
         thread receive_can_thread(&CanTranceiver::CanFromUI, can_tranceiver_);
 //        printf("Cntr : %d \n", can_tranceiver_->getCanFrame().frame_cntr);
-        thread start_emulate(&Server::StartEmulate, server_, can_tranceiver_->getCanFrame());
         receive_can_thread.join();
+        thread start_emulate(&Server::StartEmulate, server_, can_tranceiver_->getCanFrame());
         start_emulate.join();
     }
 }

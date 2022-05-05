@@ -12,7 +12,7 @@ void TestEmulator::SetUp(){
     engine = new Engine();
     thread opencan_thread(&CanTranceiver::OpenCan, can_receiver_);
     opencan_thread.join();
-while (testcfr.frame_cntr == 0) {
+while (testcfr.frame_counter == 0) {
         thread receive_can_thread(&CanTranceiver::CanFromUI, can_receiver_);
         receive_can_thread.join();
         thread start_emulate(&Server::StartEmulate, server_, can_receiver_->getCanFrame());
@@ -25,7 +25,7 @@ void TestEmulator::TearDown(){
 
 TEST_F(TestEmulator, CanReceived){
 
-    EXPECT_EQ(testcfr.frame_cntr, 12);
+    EXPECT_EQ(testcfr.frame_counter, 12);
 }
 TEST_F(TestEmulator, carStatus){
 

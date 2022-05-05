@@ -9,6 +9,8 @@ namespace ui {
 
 // Constants for key inputs
 namespace key {
+const int k_comma = 44;
+const int k_period = 46;
 const int k_0 = 48;
 const int k_1 = 49;
 const int k_2 = 50;
@@ -26,6 +28,7 @@ const int k_N = 78;
 const int k_P = 80;
 const int k_Q = 81;
 const int k_R = 82;
+const int k_S = 83;
 const int k_b = 98;
 const int k_d = 100;
 const int k_f = 102;
@@ -33,6 +36,7 @@ const int k_n = 110;
 const int k_p = 112;
 const int k_q = 113;
 const int k_r = 114;
+const int k_s = 115;
 }  // namespace key
 
 /*!
@@ -55,7 +59,7 @@ class UserInput {
 
   bool Cmd(const int&);
   void UpdateCanFrameBitfield();
-  void SetIgnition(const Ignition&);
+  void SetIgnition();
   void SetGear(const Gear&);
   void SetThrottle(const Pedal&);
   void SetBrake(const Pedal&);

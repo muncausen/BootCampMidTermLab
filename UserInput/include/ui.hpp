@@ -1,4 +1,5 @@
 #include <curses.h>
+#include <mutex>
 
 #include "candb.hpp"
 
@@ -57,7 +58,7 @@ class UserInput {
   // Input char
   int ch{};
 
-  bool Cmd(const int&);
+  bool Cmd();
   void UpdateCanFrameBitfield();
   void SetIgnition();
   void SetGear(const Gear&);
@@ -67,7 +68,7 @@ class UserInput {
 };
 
 void InitNcurses();
-void SendToCan(const UserInput& ui);
+void SendToCan(const UserInput&, std::mutex&);
 
 }  // namespace ui
 

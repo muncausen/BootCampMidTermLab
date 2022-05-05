@@ -1,8 +1,8 @@
 
 
 add_library(drivelib STATIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/can_receiver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/socketcan.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/can_tranceiver.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/socketcan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/engine.cpp  
 )
@@ -12,9 +12,9 @@ target_include_directories(
 PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}../../Common/include)
-
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../UserInput/include
+    )
 
 add_executable(DriveLine
  ${CMAKE_CURRENT_SOURCE_DIR}/../main.cpp) 
@@ -44,25 +44,25 @@ foreach(dir ${dirs})
 endforeach()
 
 message(STATUS "-----------------------------------------------------------------------")
-macro(print_all_variables)
+# macro(print_all_variables)
 
-    message(STATUS "print_all_variables------------------------------------------{")
+#     message(STATUS "print_all_variables------------------------------------------{")
 
-    get_cmake_property(_variableNames VARIABLES)
+#     get_cmake_property(_variableNames VARIABLES)
 
-    foreach (_variableName ${_variableNames})
+#     foreach (_variableName ${_variableNames})
 
-        message(STATUS "${_variableName}=${${_variableName}}")
+#         message(STATUS "${_variableName}=${${_variableName}}")
 
-    endforeach()
+#     endforeach()
 
-    message(STATUS "print_all_variables------------------------------------------}")
+#     message(STATUS "print_all_variables------------------------------------------}")
 
-endmacro()
+# endmacro()
 
 
 
-print_all_variables()
+# print_all_variables()
 
 # End debugger help
 

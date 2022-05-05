@@ -8,8 +8,8 @@ set(CMAKE_THREAD_PREFER_PTHREAD ON)
 find_package(Threads REQUIRED)
 
 add_library(emu_test_lib STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/can_receiver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/socketcan.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/can_tranceiver.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/socketcan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/src/engine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/server.cpp
 )
@@ -20,6 +20,8 @@ target_include_directories(
 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../DriveLine
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../UserInput/include
 )
 
 add_executable(${TEST_NAME}

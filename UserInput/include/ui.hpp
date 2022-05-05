@@ -36,55 +36,6 @@ const int k_r = 114;
 }  // namespace key
 
 /*!
- * \brief Enum representation of ignition state.
- *
- */
-enum class Ignition {
-  kOff = 0,
-  kOn,
-};
-
-/*!
- * \brief Enum representation of gear selector position.
- *
- */
-enum class Gear {
-  kPark = 0,
-  kReverse,
-  kNeutral,
-  kDrive,
-};
-
-/*!
- * \brief Enum representation of pedal input in 10% increments.
- *
- */
-enum class Pedal {
-  kZero = 0,
-  kTen = 10,
-  kTwenty = 20,
-  kThirty = 30,
-  kForty = 40,
-  kFifty = 50,
-  kSixty = 60,
-  kSeventy = 70,
-  kEighty = 80,
-  kNinety = 90,
-  kOneHundred = 100,
-};
-
-/*!
- * \brief Enum representation of blinker state.
- *
- */
-enum class Blinker {
-  kOff = 0,
-  kRight,
-  kLeft,
-  kWarning,
-};
-
-/*!
  * \brief Class to hold user inputs and the methods to set them.
  *
  */
@@ -105,7 +56,7 @@ class UserInput {
   bool Cmd(const int&);
   void UpdateCanFrameBitfield();
   void SetIgnition(const Ignition&);
-  void SetGear(const int&);
+  void SetGear(const Gear&);
   void SetThrottle(const Pedal&);
   void SetBrake(const Pedal&);
   void SetBlinker(const Blinker&);

@@ -12,6 +12,7 @@ add_executable(ui
   src/ui.cpp
   ../Common/src/socketcan.cpp
 )
+
 add_subdirectory(test)
 
 target_link_libraries(ui
@@ -22,6 +23,6 @@ PUBLIC
 
 target_include_directories(ui
 PUBLIC
-  "../Common/include"
-  "include"
+  ../Common/include
+  include
 )

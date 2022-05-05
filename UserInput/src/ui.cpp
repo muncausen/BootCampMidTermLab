@@ -50,7 +50,7 @@ void SendToCan(const UserInput& ui) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
-// Command handling function
+
 /*!
  * \brief Command handling function
  *
@@ -116,19 +116,37 @@ bool UserInput::Cmd(const int& ch) {
       this->SetBrake(Pedal::kOneHundred);
       break;
 
+    case key::k_D:
+    case key::k_d:
+      this->SetGear(Gear::kDrive);
+      break;
+
     case key::k_N:
     case key::k_n:
-      this->SetBrake(Pedal::kZero);
+      this->SetGear(Gear::kNeutral);
       break;
 
     case key::k_F:
     case key::k_f:
-      this->SetThrottle(Pedal::kOneHundred);
+      this->SetThrottle(Pedal::kOneHundred);  // Full speed ahead!
+      break;
+
+    case key::k_P:
+    case key::k_p:
+      this->SetGear(Gear::kPark);
+      break;
+
+    case key::k_R:
+    case key::k_r:
+      this->SetGear(Gear::kReverse);
       break;
 
     case KEY_DOWN:
+      this->SetGear(Gear::kNext);
+      break;
+
     case KEY_UP:
-      this->SetGear(ch);
+      this->SetGear(Gear::kPrevious);
       break;
 
     default:
@@ -176,35 +194,63 @@ void UserInput::SetIgnition(const Ignition& ig) {
  *
  * \param gr Gear value based on user input.
  */
-void UserInput::SetGear(const int& gr) {
+void UserInput::SetGear(const Gear& gr) {
   std::string curr_gear{};
 
-  if (KEY_DOWN == gr) {
-    if (Gear::kPark == this->gear_selection) {
-      this->gear_selection = Gear::kReverse;
-      curr_gear = "R";
-    } else if (Gear::kReverse == this->gear_selection) {
-      this->gear_selection = Gear::kNeutral;
-      curr_gear = "N";
-    } else if (Gear::kNeutral == this->gear_selection) {
-      this->gear_selection = Gear::kDrive;
-      curr_gear = "D";
-    }
-    std::cout << "Gear lever in " << curr_gear << "\n";
-  } else if (KEY_UP == gr) {
-    if (Gear::kDrive == this->gear_selection) {
-      this->gear_selection = Gear::kNeutral;
-      curr_gear = "N";
-    } else if (Gear::kNeutral == this->gear_selection) {
-      this->gear_selection = Gear::kReverse;
-      curr_gear = "R";
-    } else if (Gear::kReverse == this->gear_selection) {
+  switch (gr) {
+    case Gear::kPark:
       this->gear_selection = Gear::kPark;
-      curr_gear = "P";
-    }
-    std::cout << "Gear lever in " << curr_gear << "\n";
-  } else {
-    std::cout << "Gear error! Really weird gear request. This should not be possible.\n";
+      break;
+
+    case Gear::kReverse:
+      this->gear_selection = Gear::kReverse;
+      break;
+
+    case Gear::kNeutral:
+      this->gear_selection = Gear::kNeutral;
+      break;
+
+    case Gear::kDrive:
+      this->gear_selection = Gear::kDrive;
+      break;
+
+    case Gear::kNext:
+      if (Gear::kPark == this->gear_selection) {
+        this->gear_selection = Gear::kReverse;
+        curr_gear = "R";
+      } else if (Gear::kReverse == this->gear_selection) {
+        this->gear_selection = Gear::kNeutral;
+        curr_gear = "N";
+      } else if (Gear::kNeutral == this->gear_selection) {
+        this->gear_selection = Gear::kDrive;
+        curr_gear = "D";
+      } else {
+        std::cout << "Gear lever no change.\n";
+        break;
+      }
+      std::cout << "Gear lever in " << curr_gear << "\n";
+      break;
+
+    case Gear::kPrevious:
+      if (Gear::kDrive == this->gear_selection) {
+        this->gear_selection = Gear::kNeutral;
+        curr_gear = "N";
+      } else if (Gear::kNeutral == this->gear_selection) {
+        this->gear_selection = Gear::kReverse;
+        curr_gear = "R";
+      } else if (Gear::kReverse == this->gear_selection) {
+        this->gear_selection = Gear::kPark;
+        curr_gear = "P";
+      } else {
+        std::cout << "Gear lever no change.\n";
+        break;
+      }
+      std::cout << "Gear lever in " << curr_gear << "\n";
+      break;
+
+    default:
+      std::cout << "Gear error! Really weird gear request. This should not be possible.\n";
+      break;
   }
 }
 

@@ -12,5 +12,9 @@ class TestUi : public ::testing::Test
         TestUi() = default;
         void SetUp() override;
         void TearDown () override;
+        scpp::CanFrame cf_to_write{};
+        UserInput ui{};
+        scpp::SocketCan socket_can{};
+        int eq{};
                         
 };

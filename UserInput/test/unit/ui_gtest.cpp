@@ -1,105 +1,150 @@
 #include "ui_gtest.hpp"
 
+#include <cstring>
 #include <iostream>
 
-using namespace std;
-
-void TestUi::SetUp() {}
+void TestUi::SetUp() {
+  if (socket_can.open("vcan0") != scpp::STATUS_OK) {
+    std::cout << "Cannot open vcan0." << std::endl;
+    std::cout << "Check whether the vcan0 interface is up!" << std::endl;
+    exit(-1);
+  }
+}
 
 void TestUi::TearDown() {}
 
 TEST_F(TestUi, SetThrottle) {
-  UserInput ui{};
+  ui.Cmd(ui::key::k_0);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kZero);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_0);
-  EXPECT_EQ(ui.throttle, Pedal::kZero);
+  ui.Cmd(ui::key::k_1);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kTen);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_1);
-  EXPECT_EQ(ui.throttle, Pedal::kTen);
+  ui.Cmd(ui::key::k_2);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kTwenty);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_2);
-  EXPECT_EQ(ui.throttle, Pedal::kTwenty);
+  ui.Cmd(ui::key::k_3);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kThirty);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_3);
-  EXPECT_EQ(ui.throttle, Pedal::kThirty);
+  ui.Cmd(ui::key::k_4);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kForty);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_4);
-  EXPECT_EQ(ui.throttle, Pedal::kForty);
+  ui.Cmd(ui::key::k_5);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kFifty);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_5);
-  EXPECT_EQ(ui.throttle, Pedal::kFifty);
+  ui.Cmd(ui::key::k_6);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kSixty);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_6);
-  EXPECT_EQ(ui.throttle, Pedal::kSixty);
+  ui.Cmd(ui::key::k_7);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kSeventy);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_7);
-  EXPECT_EQ(ui.throttle, Pedal::kSeventy);
+  ui.Cmd(ui::key::k_8);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kEighty);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_8);
-  EXPECT_EQ(ui.throttle, Pedal::kEighty);
+  ui.Cmd(ui::key::k_9);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kNinety);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_9);
-  EXPECT_EQ(ui.throttle, Pedal::kNinety);
+  ui.Cmd(ui::key::k_b);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kZero);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_b);
-  EXPECT_EQ(ui.throttle, Pedal::kZero);
+  ui.Cmd(ui::key::k_B);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kZero);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_B);
-  EXPECT_EQ(ui.throttle, Pedal::kZero);
+  ui.Cmd(ui::key::k_f);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kOneHundred);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_f);
-  EXPECT_EQ(ui.throttle, Pedal::kOneHundred);
-
-  ui.Cmd(key::k_F);
-  EXPECT_EQ(ui.throttle, Pedal::kOneHundred);
+  ui.Cmd(ui::key::k_F);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.throttle, ui::Pedal::kOneHundred);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 }
 
 TEST_F(TestUi, SetBrake) {
-  UserInput ui{};
+  ui.Cmd(ui::key::k_b);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.brake, ui::Pedal::kOneHundred);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 
-  ui.Cmd(key::k_b);
-  EXPECT_EQ(ui.brake, Pedal::kOneHundred);
-
-  ui.Cmd(key::k_B);
-  EXPECT_EQ(ui.brake, Pedal::kOneHundred);
+  ui.Cmd(ui::key::k_B);
+  ui.UpdateCanFrameBitfield();
+  std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+  EXPECT_EQ(ui.brake, ui::Pedal::kOneHundred);
+  EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 }
 
 TEST_F(TestUi, DISABLED_SetGear) {
-  UserInput ui{};
+  ui.Cmd(ui::key::k_r);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kReverse);
 
-  ui.Cmd(key::k_r);
-  EXPECT_EQ(ui.gear_selection, Gear::kReverse);
+  ui.Cmd(ui::key::k_R);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kReverse);
 
-  ui.Cmd(key::k_R);
-  EXPECT_EQ(ui.gear_selection, Gear::kReverse);
+  ui.Cmd(ui::key::k_d);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kDrive);
 
-  ui.Cmd(key::k_d);
-  EXPECT_EQ(ui.gear_selection, Gear::kDrive);
+  ui.Cmd(ui::key::k_D);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kDrive);
 
-  ui.Cmd(key::k_D);
-  EXPECT_EQ(ui.gear_selection, Gear::kDrive);
+  ui.Cmd(ui::key::k_n);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kNeutral);
 
-  ui.Cmd(key::k_n);
-  EXPECT_EQ(ui.gear_selection, Gear::kNeutral);
+  ui.Cmd(ui::key::k_N);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kNeutral);
 
-  ui.Cmd(key::k_N);
-  EXPECT_EQ(ui.gear_selection, Gear::kNeutral);
+  ui.Cmd(ui::key::k_p);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kPark);
 
-  ui.Cmd(key::k_p);
-  EXPECT_EQ(ui.gear_selection, Gear::kPark);
-
-  ui.Cmd(key::k_P);
-  EXPECT_EQ(ui.gear_selection, Gear::kPark);
+  ui.Cmd(ui::key::k_P);
+  EXPECT_EQ(ui.gear_selection, ui::Gear::kPark);
 }
 
 TEST_F(TestUi, DISABLED_SetIgnition) {
-  UserInput ui{};
-  
   ui.Cmd(0);
-  EXPECT_EQ(ui.ignition, Ignition::kOff);
+  EXPECT_EQ(ui.ignition, ui::Ignition::kOff);
 
   ui.Cmd(1);
-  EXPECT_EQ(ui.ignition, Ignition::kOn);
+  EXPECT_EQ(ui.ignition, ui::Ignition::kOn);
 }
 
-TEST_F(TestUi, SetBlinker) {}
+TEST_F(TestUi, DISABLED_SetBlinker) {}

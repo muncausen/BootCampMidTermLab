@@ -10,7 +10,7 @@ find_package(Threads REQUIRED)
 
 add_library(ui_test_lib STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src/socketcan.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/socketcan.cpp
     #${CMAKE_CURRENT_SOURCE_DIR}/../UserInput/src/engine.cpp
     #${CMAKE_CURRENT_SOURCE_DIR}/../UserInput/server.cpp
 )
@@ -20,7 +20,7 @@ target_include_directories(
 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../UserInput
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Common/include
     
 )
 

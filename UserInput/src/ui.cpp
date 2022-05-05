@@ -70,6 +70,10 @@ bool UserInput::Cmd(const int& ch) {
       run = false;
       break;
 
+    case key::k_S:
+    case key::k_s:
+      this->SetIgnition();
+
     case key::k_0:
       this->SetThrottle(Pedal::kZero);
       break;
@@ -110,6 +114,11 @@ bool UserInput::Cmd(const int& ch) {
       this->SetThrottle(Pedal::kNinety);
       break;
 
+    case key::k_comma:
+      this->SetBrake(Pedal::kZero);
+      break;
+
+    case key::k_period:
     case key::k_B:
     case key::k_b:
       this->SetThrottle(Pedal::kZero);  // Abort cruise control!
@@ -169,22 +178,21 @@ void UserInput::UpdateCanFrameBitfield() {
 /*!
  * \brief Sets the value of ignition state.
  *
- * \param ig Ignition value from user input.
  */
-void UserInput::SetIgnition(const Ignition& ig) {
-  switch (ig) {
+void UserInput::SetIgnition() {
+  switch (this->ignition) {
     case Ignition::kOff:
+      this->ignition = Ignition::kOn;
+      std::cout << "Ignition on.\n";
+      break;
+
+    case Ignition::kOn:
       this->ignition = Ignition::kOff;
       std::cout << "Ignition off.\n";
       break;
 
-    case Ignition::kOn:
-      std::cout << "Ignition on.\n";
-      this->ignition = Ignition::kOn;
-      break;
-
     default:
-      std::cout << "Ignition error! Unknown ignition state\n";
+      std::cout << "Ignition error! Unknown ignition state.\n";
       break;
   }
 }
@@ -200,52 +208,54 @@ void UserInput::SetGear(const Gear& gr) {
   switch (gr) {
     case Gear::kPark:
       this->gear_selection = Gear::kPark;
+      std::cout << "Gear lever in Park.\n";
       break;
 
     case Gear::kReverse:
       this->gear_selection = Gear::kReverse;
+      std::cout << "Gear lever in Reverse.\n";
       break;
 
     case Gear::kNeutral:
       this->gear_selection = Gear::kNeutral;
+      std::cout << "Gear lever in Neutral.\n";
       break;
 
     case Gear::kDrive:
       this->gear_selection = Gear::kDrive;
+      std::cout << "Gear lever in Drive.\n";
       break;
 
     case Gear::kNext:
       if (Gear::kPark == this->gear_selection) {
         this->gear_selection = Gear::kReverse;
-        curr_gear = "R";
+        std::cout << "Gear lever in Reverse.\n";
       } else if (Gear::kReverse == this->gear_selection) {
         this->gear_selection = Gear::kNeutral;
-        curr_gear = "N";
+        std::cout << "Gear lever in Neutral.\n";
       } else if (Gear::kNeutral == this->gear_selection) {
         this->gear_selection = Gear::kDrive;
-        curr_gear = "D";
+        std::cout << "Gear lever in Drive.\n";
       } else {
         std::cout << "Gear lever no change.\n";
         break;
       }
-      std::cout << "Gear lever in " << curr_gear << "\n";
       break;
 
     case Gear::kPrevious:
       if (Gear::kDrive == this->gear_selection) {
         this->gear_selection = Gear::kNeutral;
-        curr_gear = "N";
+        std::cout << "Gear lever in Neutral.\n";
       } else if (Gear::kNeutral == this->gear_selection) {
         this->gear_selection = Gear::kReverse;
-        curr_gear = "R";
+        std::cout << "Gear lever in Reverse.\n";
       } else if (Gear::kReverse == this->gear_selection) {
         this->gear_selection = Gear::kPark;
-        curr_gear = "P";
+        std::cout << "Gear lever in Park.\n";
       } else {
         std::cout << "Gear lever no change.\n";
         break;
       }
-      std::cout << "Gear lever in " << curr_gear << "\n";
       break;
 
     default:

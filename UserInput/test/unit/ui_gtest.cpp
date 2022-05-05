@@ -114,7 +114,7 @@ TEST_F(TestUi, SetBrake) {
   EXPECT_EQ(0, memcmp(&ui.can_frame_bitfield, cf_to_write.data, sizeof(ui.can_frame_bitfield)));
 }
 
-TEST_F(TestUi, DISABLED_SetGear) {
+TEST_F(TestUi, SetGear) {
   ui.Cmd(ui::key::k_r);
   EXPECT_EQ(ui.gear_selection, Gear::kReverse);
 
@@ -140,12 +140,28 @@ TEST_F(TestUi, DISABLED_SetGear) {
   EXPECT_EQ(ui.gear_selection, Gear::kPark);
 }
 
-TEST_F(TestUi, DISABLED_SetIgnition) {
-  ui.Cmd(0);
-  EXPECT_EQ(ui.ignition, Ignition::kOff);
+TEST_F(TestUi, SetIgnition) {
+  // Store ignition initial state.
+  Ignition ig_temp = ui.ignition;
 
-  ui.Cmd(1);
-  EXPECT_EQ(ui.ignition, Ignition::kOn);
+  // Create CAN frame bitfield for checking can data.
+  UserInputCanFrame bf{};
+
+  // Send command to toggle ignition. Expect current state to be different from inital state.
+  ui.Cmd(ui::key::k_s);
+  EXPECT_NE(ui.ignition, ig_temp);
+
+  // Send command to toggle ignition again. Expect current state to have changed back to the inital state.
+  ui.Cmd(ui::key::k_s);
+  EXPECT_EQ(ui.ignition, ig_temp);
+
+  // Repeat the test with capital 'S' input command.
+  ui.Cmd(ui::key::k_S);
+  EXPECT_NE(ui.ignition, ig_temp);
+
+  ui.Cmd(ui::key::k_S);
+  EXPECT_EQ(ui.ignition, ig_temp);
+
 }
 
 TEST_F(TestUi, DISABLED_SetBlinker) {}

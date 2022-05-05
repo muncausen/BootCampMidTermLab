@@ -4,10 +4,10 @@
 
 void Engine::GearCalc(const uint8_t& throtle, const uint8_t& user_gear, const uint8_t& ignition) {
   clock_t d[]{2 * CLOCKS_PER_SEC, 10 * CLOCKS_PER_SEC, 15 * CLOCKS_PER_SEC, 25 * CLOCKS_PER_SEC, 35 * CLOCKS_PER_SEC};
-  if (ignition == static_cast<uint>(ui::Ignition::kOn)) {
-    if (user_gear > static_cast<uint>(ui::Gear::kPark)) {
+  if (ignition == static_cast<uint>(Ignition::kOn)) {
+    if (user_gear > static_cast<uint>(Gear::kPark)) {
       for (int i = 0; i < 5; i++) {
-        if (gear_ > static_cast<uint>(ui::Gear::kNeutral)) {
+        if (gear_ > static_cast<uint>(Gear::kNeutral)) {
           Delay(d[i]);
           ++gear_;
           printf("Gear %d \n ", gear_);

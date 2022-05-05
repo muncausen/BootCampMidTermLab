@@ -24,5 +24,4 @@ void Delay(const clock_t& delay) {
   clock_t now = clock();
   while (clock() - now < delay / 10)
     ;
-  int main();
 }

@@ -23,6 +23,6 @@ PUBLIC
 
 target_include_directories(ui
 PUBLIC
-  "../Common/include"
-  "include"
+  ../Common/include
+  include
 )

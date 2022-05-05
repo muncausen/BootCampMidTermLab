@@ -111,5 +111,6 @@ class UserInput {
 };
 
 void InitNcurses();
+void SendToCan(const UserInput& ui);
 
 #endif  // SRC_UI_UI_HPP

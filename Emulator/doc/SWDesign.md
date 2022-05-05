@@ -1,21 +1,21 @@
 
 
-there are two executables:
+
+    
+    DriveLine:
+
+    ![emulator.png]
+
     1- CANTranceiver
-    2- DriveLine Emulator
+    2- Server
+    2- DriveLine Simulator
 
-    DriveLine Emulator includs:
-    2.1- CANReceiver: receiving CAN frames from the User Input module and saves them.
-        since CAN communication a event based, then once CANReceiver receives a new frame will
-        call a methode from Server and pass the reference of saved frame/s to the Server class.
+    1- CANTranceiver: receiving CAN frames from the UserInput module and saves CAN frames. It also receives info from Server and publish them on CAN bus.
+        
+    2-Server: The purpose of Server is to provide interface for the DriveLine Simulator and encapsulates it. It takes CAN frames, once they published and takes back the reulsts from Simulator then sends them to CANTranceiver.
 
-    2.2-Server: Receives CAN frames, once they published, unpack data and checks if CAN communication is ok and CAN bus is alive.
-        also Server packs the result one are ready and sends it to CANSender.
+    3- DriveLine Simulator: Once it Receives deta from the Server calculates speed and RPM etc. It has no public interface, only talks to the Server.
 
-    2.3- DriveLine: Server passes unpacked data to related module in DriveLine.
-        each software component does its job and save the result in its variables. Calculated speed and RPM will be collected by server from where other DriveLine components stored.
-    2.4- CANSender: this class has a data collector function which is called by the Server. 
-        Server will pass then the reference of where the calculated values are stored. CANSender will put data together in a CAN fram.
+    2.4- test: performs GoogleTest on the DriveLine unit.
 
-    pros: secure sw design. calculation and data are hidden inside DriveLine. DriveLine Emulator's Interface has no information about sensetive data or functions from DriveLine.
-    cons: might be not easy to do unit test per software component.
+    Repository [Engine Emulator](https://github.com/muncausen/BootCampMidTermLab/tree/main/Emulator).

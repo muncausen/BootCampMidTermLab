@@ -4,13 +4,11 @@
 
 void Engine::GearCalc(const uint8_t& throtle, const uint8_t& user_gear, const uint8_t& ignition) {
   clock_t d[]{2 * CLOCKS_PER_SEC, 10 * CLOCKS_PER_SEC, 10 * CLOCKS_PER_SEC, 8 * CLOCKS_PER_SEC, 5 * CLOCKS_PER_SEC};
-  if (true /*ignition == static_cast<uint>(Ignition::kOn)*/) {
-    if (user_gear > static_cast<uint>(Gear::kNeutral)) {
-      for (int i = 0; i < 5; i++) {
-        Delay(d[i]);
-        ++gear_;
-        printf("Auto Gear ... %d \n ", gear_);
-      }
+  if (true /*ignition == static_cast<uint>(Ignition::kOn)*/ && user_gear > static_cast<uint>(Gear::kNeutral)) {
+    for (int i = 0; i < 5; i++) {
+      Delay(d[i]);
+      ++gear_;
+      printf("Auto Gear ... %d \n ", gear_);
     }
   }
 }

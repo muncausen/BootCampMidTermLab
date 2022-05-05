@@ -17,8 +17,8 @@ bool CanTranceiver::CanFromUI(){
     //    CanDispData candata;
         scpp::CanFrame can_from_ui;
         if (sockat_can.read(can_from_ui) == scpp::STATUS_OK) {            
-            printf("len %d byte, id: %d, data: %02x %02x %02x %02x  \n", can_from_ui.len, can_from_ui.id, 
-            can_from_ui.data[0], can_from_ui.data[1], can_from_ui.data[2], can_from_ui.data[3]);
+            // printf("len %d byte, id: %d, data: %02x %02x %02x %02x  \n", can_from_ui.len, can_from_ui.id, 
+            // can_from_ui.data[0], can_from_ui.data[1], can_from_ui.data[2], can_from_ui.data[3]);
             {const std::lock_guard<std::mutex> lock(can_mutex);
             //******************************************************
             memcpy(&can_ui_frame.can_data, can_from_ui.data, sizeof(UserInputCanFrame));}

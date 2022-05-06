@@ -17,7 +17,7 @@ PUBLIC
     )
 
 add_executable(DriveLine
- ${CMAKE_CURRENT_SOURCE_DIR}/../main.cpp) 
+ ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp) 
  
 #add_executable(runTests test_mini.cpp)
 # Locate GTest

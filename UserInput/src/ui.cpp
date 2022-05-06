@@ -10,8 +10,7 @@
 namespace ui {
 
 /*!
- * \brief Initiates required setup for ncurses
- *
+ * \brief Initiates required setup for ncurses.
  */
 void InitNcurses() {
   initscr();
@@ -24,9 +23,11 @@ void InitNcurses() {
 /*!
  * \brief Populates a can frame and sends it on the CAN bus.
  *
- * \param ui The user input object containing the info to send.
+ * \param run[in] Boolean for exitinf while loop.
+ * \param uibf[in] The user input bitfield containing data to send.
+ * \param mx[in] Mutex to not conflict with main thread.
  */
-void SendToCan(const UserInput& ui, std::mutex& mx) {
+void SendToCan(const bool& run, const UserInputCanFrame& uibf, std::mutex& mx) {
   scpp::SocketCan socket_can;
 
   if (socket_can.open("vcan0") != scpp::STATUS_OK) {
@@ -35,28 +36,30 @@ void SendToCan(const UserInput& ui, std::mutex& mx) {
     exit(-1);
   }
 
-  while (true) {
+  while (run) {
     scpp::CanFrame cf_to_write;
 
     cf_to_write.id = 123;
-    cf_to_write.len = sizeof(ui.can_frame_bitfield);
+    cf_to_write.len = sizeof(uibf);
 
     // Lock mutex and update.
     {
       std::lock_guard<std::mutex> lk(mx);
-      std::memcpy(cf_to_write.data, &ui.can_frame_bitfield, sizeof(ui.can_frame_bitfield));
+      std::memcpy(cf_to_write.data, &uibf, sizeof(uibf));
     }
 
     auto write_sc_status = socket_can.write(cf_to_write);
-    if (write_sc_status != scpp::STATUS_OK)
+    if (write_sc_status != scpp::STATUS_OK) {
       printf("something went wrong on socket write, error code : %d \n", int32_t(write_sc_status));
+    }
 
+    // Send CAN frame periodically.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 
 /*!
- * \brief Command handling function
+ * \brief Command handling function.
  *
  * \return true so long as the application is supposed to run.
  * \return false when the application should stop and terminate.
@@ -169,6 +172,9 @@ bool UserInput::Cmd() {
   return run;
 }
 
+/*!
+ * \brief Increment frame counter and updates the bitfield data from the private variables.
+ */
 void UserInput::UpdateCanFrameBitfield() {
   this->can_frame_bitfield.frame_counter++;
   this->can_frame_bitfield.ignition = static_cast<uint>(this->ignition);

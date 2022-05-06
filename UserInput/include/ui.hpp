@@ -1,6 +1,8 @@
 #include <curses.h>
 #include <mutex>
 
+#include <mutex>
+
 #include "candb.hpp"
 
 #ifndef SRC_UI_UI_HPP
@@ -46,13 +48,6 @@ const int k_s = 115;
  */
 class UserInput {
  public:
-  // Input request variables
-  Ignition ignition{};
-  Gear gear_selection{};
-  Pedal throttle{};
-  Pedal brake{};
-  Blinker blinker{};
-
   UserInputCanFrame can_frame_bitfield{};
 
   // Input char
@@ -65,10 +60,18 @@ class UserInput {
   void SetThrottle(const Pedal&);
   void SetBrake(const Pedal&);
   void SetBlinker(const Blinker&);
+
+  /*! \todo Make these private!  */
+  // Input request variables
+  Ignition ignition{};
+  Gear gear_selection{};
+  Pedal throttle{};
+  Pedal brake{};
+  Blinker blinker{};
 };
 
 void InitNcurses();
-void SendToCan(const UserInput&, std::mutex&);
+void SendToCan(const bool&, const UserInputCanFrame&, std::mutex&);
 
 }  // namespace ui
 

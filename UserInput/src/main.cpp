@@ -14,7 +14,7 @@ int main() {
 
   ui::InitNcurses();
 
-  std::thread can_thread(ui::SendToCan, std::ref(ui), std::ref(mx));
+  std::thread can_thread(ui::SendToCan, std::ref(run), std::ref(ui.can_frame_bitfield), std::ref(mx));
 
   // Will loop until false is returned from input check.
   while (run) {

@@ -1,13 +1,18 @@
-# BootCampMidTermLab
+# Engine Emulator Project
 
-To fill in description
-##DriveLine:
+## 1- User Input
 
-![DriveLine/doc/emulator.png]
+## 2-DriveLine
+
+![Emulator](https://github.com/muncausen/BootCampMidTermLab/blob/main/Emulator/doc/emulator.png)
 
 1- CANTranceiver
+
 2- Server
-2- DriveLine Simulator
+
+3- DriveLine Simulator
+
+4- test
 
 1- CANTranceiver: receiving CAN frames from the UserInput module and saves CAN frames. It also receives info from Server and publish them on CAN bus.
     
@@ -15,9 +20,6 @@ To fill in description
 
 3- DriveLine Simulator: Once it Receives deta from the Server calculates speed and RPM etc. It has no public interface, only talks to the Server.
 
-2.4- test: performs GoogleTest on the DriveLine unit.
+4- test: performs GoogleTest on the DriveLine unit.
 
 Repository [Engine Emulator](https://github.com/muncausen/BootCampMidTermLab/tree/main/Emulator).
-
-
-![usecases](https://github.com/muncausen/BootCampMidTermLab/blob/main/Doc/uscases.png)

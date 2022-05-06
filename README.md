@@ -14,7 +14,7 @@
 
 4- test
 
-1- CANTranceiver: receiving CAN frames from the UserInput module and saves CAN frames. It also receives info from Server and publish them on CAN bus.
+1- CANTranceiver: receives CAN frames from the UserInput module and saves CAN frames. It also receives results from Server and publish them on CAN bus.
     
 2-Server: The purpose of Server is to provide interface for the DriveLine Simulator and encapsulates it. It takes CAN frames, once they published and takes back the reulsts from Simulator then sends them to CANTranceiver.
 

@@ -19,18 +19,15 @@ struct CanDisplayData {
 struct CanDisplayFrame {
   uint32_t can_id;
   uint8_t can_dlc;
-  CanDisplayData can_data;
+  CanDisplayData can_data; //data transfered to display e.g. speed, revs, etc
 };
 class CanReceiver {
  public:
   CanReceiver() = default;
   CanDisplayFrame can_frame_display;  
   scpp::SocketCan sockat_can;
-  scpp::CanFrame can_fr;
   bool OpenCan();
   bool CanFromServer();
-  uint8_t prev_cntr{0};
-  DisplayCanFrame getCanFrame();
 };
 
 #endif  // DISPLAY_INCLUDE_DISPLAY_HPP_

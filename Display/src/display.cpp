@@ -16,10 +16,10 @@ bool CanReceiver::OpenCan() {
 }
 
 bool CanReceiver::CanFromServer() {
-  mutex can_mutex;
+  // mutex can_mutex;
   scpp::CanFrame can_from_server;
   if (sockat_can.read(can_from_server) == scpp::STATUS_OK) {
-    const std::lock_guard<std::mutex> lock(can_mutex);
+    // const std::lock_guard<std::mutex> lock(can_mutex);
     memcpy(&can_frame_display.can_data, can_from_server.data, sizeof(can_frame_display.can_data));
   }
 }

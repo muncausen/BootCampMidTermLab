@@ -1,8 +1,6 @@
 #include <curses.h>
 #include <mutex>
 
-#include <mutex>
-
 #include "candb.hpp"
 
 #ifndef SRC_UI_UI_HPP

@@ -19,9 +19,9 @@ enum SocketCanStatus {
   STATUS_OK = 1 << 0,
   STATUS_SOCKET_CREATE_ERROR = 1 << 2,
   STATUS_INTERFACE_NAME_TO_IDX_ERROR = 1 << 3,
-  STATUS_MTU_ERROR = 1 << 4,                /// maximum transfer unit
-  STATUS_CANFD_NOT_SUPPORTED = 1 << 5,      /// Flexible data-rate is not supported on this interface
-  STATUS_ENABLE_FD_SUPPORT_ERROR = 1 << 6,  /// Error on enabling fexible-data-rate support
+  STATUS_MTU_ERROR = 1 << 4,                // maximum transfer unit
+  STATUS_CANFD_NOT_SUPPORTED = 1 << 5,      // Flexible data-rate is not supported on this interface
+  STATUS_ENABLE_FD_SUPPORT_ERROR = 1 << 6,  // Error on enabling flexible-data-rate support
   STATUS_WRITE_ERROR = 1 << 7,
   STATUS_READ_ERROR = 1 << 8,
   STATUS_BIND_ERROR = 1 << 9,

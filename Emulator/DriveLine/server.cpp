@@ -16,7 +16,7 @@ bool Server::StartEmulate(const UserInputCanFrame& can_data) {
     // can_data_to_disp.blinkers = can_data.blinkers;
     // can_data_to_disp.ignition = can_data.ignition;
     can_data_to_disp.gear_select = auto_gear_;
-    //    can_tranceiver->CanToDisplay(can_data_to_disp);
+    can_tranceiver->CanToDisplay(can_data_to_disp);
     // cout << "RPM in SERVER: " << static_cast<int>(engine_rpm) << endl;
     isCanUpdated = true;
     prev_cntr = can_data.frame_counter;

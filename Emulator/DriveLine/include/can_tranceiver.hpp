@@ -30,22 +30,17 @@ struct CanUIFrame {
   uint8_t can_dlc;
   UserInputCanFrame can_data;
 };
-struct CandispFrame {
-  uint32_t can_id;
-  uint8_t can_dlc;
-  CanDispData can_data;
-};
+
 class CanTranceiver {
+  CanUIFrame can_ui_frame{};
+
  public:
   CanTranceiver() = default;
-  CanUIFrame can_ui_frame{};
-  CanDispData can_data;  // test using shift and & methode
+  //  CanDispData can_data;  // test using shift and & methode
   scpp::SocketCan sockat_can;
-  scpp::CanFrame can_fr;
   bool OpenCan();
   bool CanFromUI();
   bool CanToDisplay(const DisplayCanFrame&);
-  uint8_t prev_cntr{0};
   UserInputCanFrame getCanFrame();
 };
 

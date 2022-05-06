@@ -1,8 +1,6 @@
 # Engine Emulator Project
 
-## 1- User Input
-
-## 2-DriveLine
+## -DriveLine
 
 ![Emulator](https://github.com/muncausen/BootCampMidTermLab/blob/main/Emulator/doc/emulator.png)
 

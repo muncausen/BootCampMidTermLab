@@ -8,13 +8,12 @@ project(BootCampProject
 )
 
 add_executable(display
-  #src/main.cpp
+  src/main.cpp
   src/display.cpp
   ../Common/src/socketcan.cpp
 )
-add_subdirectory(test)
 
-target_link_libraries(ui
+target_link_libraries(display
 PUBLIC
   ncurses
   pthread

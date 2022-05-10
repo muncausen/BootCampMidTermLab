@@ -21,6 +21,10 @@ if(BUILD_TESTS)
   add_definitions(ui private=public)
 endif(BUILD_TESTS)
 
+if(BUILD_TESTS)
+  add_definitions(ui private=public)
+endif(BUILD_TESTS)
+
 target_compile_options(ui
 PUBLIC
   -Wall

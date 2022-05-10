@@ -24,13 +24,10 @@
 
 Repository [Engine Emulator](https://github.com/muncausen/BootCampMidTermLab/tree/main/Emulator).
 
-Each gear will drive a limited range of speed based on throtle.
+Any given throttle level will produce a certain RPM, RPM also is affected by the gear shifting. for a given car with a 265/60 R18 tire which has a Diameter of 775 and Circumference of 2435, bellow graph shows the relation between rpm-speed and gear shifting.
 
-Requested Throtle | Gear     | speed upr  | speed lwr thr |
-| :---            | :---:    |    :----:  |         :---: |
-|0                | Gear 0   | 0          | 0             |
-|0 ~ 20           | Gear 1   | 0          | 20            |
-|20 ~ 40           | Gear 2   | 20         | 50            |
-|40 ~ 60           | Gear 3   | 50         | 80            |
-|60 ~ 80           | Gear 4   | 80         | 150           |
-|80 ~ 100           | Gear 5   | 150        | 180           |
+![Rpm vs Speed / Gear shifting @rpm2000](https://github.com/muncausen/BootCampMidTermLab/blob/main/Emulator/doc/rpm_vs_speed_gear-png)
+
+whith changing throttle request by user RPM vs Gear vs Speed for the given car will be represented by bellow table:
+![Rpm vs Speed / Gear shifting @rpm2000](https://github.com/muncausen/BootCampMidTermLab/blob/main/Emulator/doc/rpm_vs_speed_gear_t.png)
+[ref.](https://www.blocklayer.com/rpm-gear.aspx)

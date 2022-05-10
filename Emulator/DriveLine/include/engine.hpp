@@ -1,18 +1,20 @@
+
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
+//#include "ui.hpp"
 #include <cstdio>
 #include <ctime>
 #include <iostream>
 #include <vector>
 
 using namespace std;
-
+class Server;
 class Engine {
  private:
   int rpm_{0};
   int speed_{0};
   int gear_{0};
-
+  
  public:
   const static int MAX_GEAR = 6;
   // RPM is a variable of throtle and Gear
@@ -23,13 +25,9 @@ class Engine {
   // if Ignition is kOn the:
   // Gear is auto, we assume the load is constant
   // if gear is higer than kPark then will increas constantly in time a max.
-  void EngineSimulation(const uint8_t&, const uint8_t&, const uint8_t&, const uint8_t&);
-  uint8_t getRpm() const;
-  uint8_t getSpeed() const;
-  uint8_t getGear() const;
+  void EngineSimulation(const uint8_t&,unsigned int&, unsigned int&, unsigned int&);
   void Delay(const clock_t&);
   bool GearChange(int &rpm, const int &rpm_start, const int &rpm_end);
-  bool SpeedChange(int &speed, const int &speed_start, const int &speed_end);
   int GearIndx= 2;
   int SpeedIndx= 1;
   int from_throttle{0};

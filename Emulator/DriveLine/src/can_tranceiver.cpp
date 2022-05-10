@@ -32,6 +32,8 @@ bool CanTranceiver::CanFromUI() {
 
 bool CanTranceiver::CanToDisplay(const DisplayCanFrame& can_from_server) {
   bool write_disp_status{true};
+  printf("CAN TO DISP:RPM : %d  Speed %d  GEAR  %d  \n", can_from_server.rpm,  can_from_server.speed, can_from_server.automatic_gear);
+  printf("CAN TO DISP:Ignition : %d   GEAR  %d  \n", can_from_server.ignition, can_from_server.gear_select);
   scpp::CanFrame can_frame_to_display;
   can_frame_to_display.id = 99;
   can_frame_to_display.len = 4;

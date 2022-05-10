@@ -1,10 +1,13 @@
 #include "engine.hpp"
+#include "server.hpp"
 
-#include "ui.hpp"
-clock_t delay = 1 * CLOCKS_PER_SEC;
-void Engine::EngineSimulation(const uint8_t& to_thr, const uint8_t& user_gear, const uint8_t& ignition, const uint8_t& brake) {
-  int to_throttle = static_cast<int> (to_thr/10);
-//  printf(" in ENGIN from server %d , casted to int %i \n", to_thr, to_throttle);
+Server server_obj;
+Server* server = &server_obj;
+const static clock_t delay_up = 1;
+const static clock_t delay_down = 5;
+clock_t coef;
+void Engine::EngineSimulation(const uint8_t& to_thr, unsigned int& rpm, unsigned int& speed, unsigned int& gear) {
+  int to_throttle = static_cast<int> (to_thr/10); //change % to number(T index)
   int g_t=0;
   int rpm_{T[from_throttle][g][GearIndx]}; // to start calculating gear and speed from the ongoing state 
   int speed_{T[from_throttle][g][SpeedIndx]};
@@ -22,76 +25,52 @@ void Engine::EngineSimulation(const uint8_t& to_thr, const uint8_t& user_gear, c
         gear_ = T[to_throttle][g][0];
 //          cout << "   Gear: " << T[to_throttle][g][0] << endl;
           do{
-              Delay(delay);
+              Delay(coef);
               fb_gear = GearChange(rpm_, T[from_throttle][g][GearIndx], T[to_throttle][g][GearIndx]);
-              fb_speed = SpeedChange(speed_, T[from_throttle][g][SpeedIndx], T[to_throttle][g][SpeedIndx]);
-              cout << "RPM: " << rpm_  << "  Speed " <<speed_ << "  Gear: " << gear_<<endl;
+              fb_speed = GearChange(speed_, T[from_throttle][g][SpeedIndx], T[to_throttle][g][SpeedIndx]);
+              printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d  \n", rpm_, speed_, gear_);
+              server_obj.GetEngineValues(rpm_, speed_, gear_);
+              speed = this->speed_;
+              rpm = this->rpm_;
+              gear = this->gear_;
+//              cout << "RPM: " << rpm_  << "  Speed " <<speed_ << "  Gear: " << gear_<<endl;
           } while (fb_gear || fb_speed);
       }
   }
   from_throttle = to_throttle;
 }
 
-uint8_t Engine::getRpm() const { return static_cast<uint> (rpm_); }
-uint8_t Engine::getSpeed() const { return static_cast<uint> (speed_); }
-uint8_t Engine::getGear() const { return static_cast<uint> (gear_); }
-
-bool Engine::GearChange(int &rpm, const int &rpm_start, const int &rpm_end)
+bool Engine::GearChange(int &val, const int &val_start, const int &val_end)
 {
-    int rpm_out= 0;
-    bool rpm_feedback{false};
-    rpm_out = rpm_start < rpm_end ? rpm + (rpm_end-rpm_start)/10: rpm - (rpm_start-rpm_end)/10;
-    if (rpm_end >= rpm_start){ //  got to Higher Throttle
-        if ((rpm_out <= rpm_end) ){
-            rpm = rpm_out;
-            rpm_feedback = true;
-            delay = 1 * CLOCKS_PER_SEC;
+    int val_out= 0;
+    bool val_feedback{false};
+    val_out = val_start < val_end ? val + (val_end-val_start)/10: val - (val_start-val_end)/30;
+    if (val_end > val_start){ //  got to Higher Throttle
+        if ((val_out >= val_end) ){
+            val = val_end;
+            val_feedback = false;
         } else {
-            rpm = rpm_end;
-            rpm_feedback = false;
+            val = val_out;
+            val_feedback = true;
+            coef = delay_up;
         }
     } else{ //  go to Lower Throttle
-        if (rpm_out >= rpm_end) {
-            rpm = rpm_out;
-            rpm_feedback = true;
-            delay = 10 * CLOCKS_PER_SEC;
+        if (val_out > val_end) {
+            val = val_out;
+            val_feedback = true;
+            coef = delay_down;
         } else  {
-            rpm = rpm_end;
-            rpm_feedback = false;
+            val = val_end;
+            val_feedback = false;
         }
     }
-    return rpm_feedback;
+    return val_feedback;
 }
 
-bool Engine::SpeedChange(int &speed, const int &speed_start, const int &speed_end)
-{
-    int speed_out= 0;
-    bool speed_feedback{false};
-    speed_out = speed_start < speed_end ? speed + (speed_end-speed_start)/10: speed - (speed_start-speed_end)/10;
-     if (speed_end >= speed_start){ //  got to Higher Throttle
-        if (speed_out <= speed_end) {
-            speed = speed_out;
-            speed_feedback = true;
-            delay = 1 * CLOCKS_PER_SEC;
-        } else {
-            speed = speed_end;
-            speed_feedback = false;
-        }
-     } else { // got to Lower Throttle
-         if (speed_out >= speed_end) {
-            speed = speed_out;
-            speed_feedback = true;
-            delay = 10 * CLOCKS_PER_SEC;
-        } else  {
-            speed = speed_end;
-            speed_feedback = false;
-        }
-     }
-    return speed_feedback;
-}
 
-void Engine::Delay(const clock_t& delay) {
+
+void Engine::Delay(const clock_t& coef) {
   clock_t now = clock();
-  while (clock() - now < delay / 10)
+  while (clock() - now < coef * CLOCKS_PER_SEC / 10)
     ;
 }

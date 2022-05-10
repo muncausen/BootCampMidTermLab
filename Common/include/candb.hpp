@@ -19,11 +19,11 @@ struct UserInputCanFrame {
  *
  */
 struct DisplayCanFrame {
-  unsigned frame_counter : 4;
+//  unsigned frame_counter : 4;
   unsigned ignition : 2;
-  unsigned gear_select : 4;
-  unsigned speed : 8;
-  unsigned rpm : 8;
+  unsigned gear_select : 3;
+  unsigned speed : 9;
+  unsigned rpm : 13;
   unsigned blinkers : 2;
   unsigned automatic_gear : 3;
 };

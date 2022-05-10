@@ -23,7 +23,7 @@ class Server {
   DisplayCanFrame can_data_to_disp{};
   uint8_t prev_cntr{0};
   uint8_t engine_rpm;
-
+  void GetEngineValues(const uint8_t&, const uint8_t&, const uint8_t&);
   void PrintEngine(const UserInputCanFrame&);
 };
 

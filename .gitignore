@@ -58,3 +58,5 @@ doc/generatedDoc/
 .cs
 .build
 .vscode
+# all bash files
+*.sh

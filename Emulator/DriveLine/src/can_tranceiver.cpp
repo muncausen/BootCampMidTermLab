@@ -35,7 +35,7 @@ bool CanTranceiver::CanToDisplay(const DisplayCanFrame& can_from_server) {
   scpp::CanFrame can_frame_to_display;
   can_frame_to_display.id = 99;
   can_frame_to_display.len = 4;
-  printf("CAN: Requested Acceleration : %d \n", can_from_server.gear_select);
+//  printf("CAN: Auto Gear : %d \n", can_from_server.gear_select);
   memcpy(can_frame_to_display.data, &can_from_server, sizeof(DisplayCanFrame));
   if (sockat_can.open("vcan0") == scpp::STATUS_OK) {
     auto write_sc_status = sockat_can.write(can_frame_to_display);

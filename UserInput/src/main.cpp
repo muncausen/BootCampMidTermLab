@@ -24,5 +24,7 @@ int main() {
     }
   }
 
+  ui.StopCanSender();
+
   return endwin();
 }

@@ -8,8 +8,8 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h>
-/* CAN DLC to real data length conversion helpers */
 
+/* CAN DLC to real data length conversion helpers */
 static const unsigned char dlc2len[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 20, 24, 32, 48, 64};
 
 /* get data length from can_dlc with sanitized can_dlc */
@@ -34,6 +34,7 @@ unsigned char can_len2dlc(unsigned char len) {
 }
 
 namespace scpp {
+
 SocketCan::SocketCan() {}
 SocketCanStatus SocketCan::open(const std::string &can_interface, int32_t read_timeout_ms, SocketMode mode) {
   m_interface = can_interface;
@@ -45,6 +46,7 @@ SocketCanStatus SocketCan::open(const std::string &can_interface, int32_t read_t
     perror("socket");
     return STATUS_SOCKET_CREATE_ERROR;
   }
+
   int mtu, enable_canfd = 1;
   struct sockaddr_can addr;
   struct ifreq ifr;
@@ -66,6 +68,7 @@ SocketCanStatus SocketCan::open(const std::string &can_interface, int32_t read_t
       perror("SIOCGIFMTU");
       return STATUS_MTU_ERROR;
     }
+
     mtu = ifr.ifr_mtu;
 
     if (mtu != CANFD_MTU) {
@@ -91,6 +94,7 @@ SocketCanStatus SocketCan::open(const std::string &can_interface, int32_t read_t
 
   return STATUS_OK;
 }
+
 SocketCanStatus SocketCan::write(const CanFrame &msg) {
   struct canfd_frame frame;
   memset(&frame, 0, sizeof(frame)); /* init CAN FD frame, e.g. LEN = 0 */
@@ -112,13 +116,13 @@ SocketCanStatus SocketCan::write(const CanFrame &msg) {
 
   return STATUS_OK;
 }
+
 SocketCanStatus SocketCan::read(CanFrame &msg) {
   struct canfd_frame frame;
 
   // Read in a CAN frame
   auto num_bytes = ::read(m_socket, &frame, CANFD_MTU);
   if (num_bytes != CAN_MTU && num_bytes != CANFD_MTU) {
-    // perror("Can read error");
     return STATUS_READ_ERROR;
   }
 
@@ -129,7 +133,9 @@ SocketCanStatus SocketCan::read(CanFrame &msg) {
 
   return STATUS_OK;
 }
+
 SocketCanStatus SocketCan::close() { return STATUS_OK; }
 const std::string &SocketCan::interfaceName() const { return m_interface; }
 SocketCan::~SocketCan() { close(); }
+
 }  // namespace scpp

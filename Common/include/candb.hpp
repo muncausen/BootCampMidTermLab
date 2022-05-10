@@ -6,12 +6,12 @@
  *
  */
 struct UserInputCanFrame {
-  unsigned frame_counter : 4;
-  unsigned ignition : 2;
-  unsigned gear_select : 4;
-  unsigned throttle : 8;
-  unsigned brake : 8;
-  unsigned blinkers : 2;
+  unsigned frame_counter : 4;   //!< Incremental frame counter, 4 bit.
+  unsigned ignition : 2;        //!< Ignition state, 2 bit.
+  unsigned gear_select : 4;     //!< Gear selection PRND, 4 bit.
+  unsigned throttle : 8;        //!< Throttle request, 8 bit.
+  unsigned brake : 8;           //!< Brake request, 8 bit.
+  unsigned turn_indicator : 2;  //!< Turn indicator incl. warning, 2 bit.
 };
 
 /*!
@@ -19,13 +19,22 @@ struct UserInputCanFrame {
  *
  */
 struct DisplayCanFrame {
-  unsigned frame_counter : 4;
-  unsigned ignition : 2;
-  unsigned gear_select : 4;
-  unsigned speed : 8;
-  unsigned rpm : 8;
-  unsigned blinkers : 2;
-  unsigned automatic_gear : 3;
+  unsigned frame_counter : 4;   //!< Incremental frame counter, 4 bit.
+  unsigned ignition : 2;        //!< Ignition state, 2 bit.
+  unsigned gear_select : 4;     //!< Gear selection PRND, 4 bit.
+  unsigned speed : 8;           //!< Vehicle speed, 8 bit.
+  unsigned rpm : 8;             //!< Engine RPM, 8 bit.
+  unsigned turn_indicator : 2;  //!< Turn indicator incl. warning, 2 bit.
+  unsigned automatic_gear : 3;  //!< Current gear engaged, 3 bit.
+};
+
+/*!
+ * \brief Enum representation of CAN frame IDs.
+ *
+ */
+enum class CanFrameId {
+  kUserInputCanFrameId = 0,
+  kDisplayCanFrameId,
 };
 
 /*!
@@ -69,10 +78,10 @@ enum class Pedal {
 };
 
 /*!
- * \brief Enum representation of blinker state.
+ * \brief Enum representation of turn indicator state.
  *
  */
-enum class Blinker {
+enum class TurnIndicator {
   kOff = 0,
   kRight,
   kLeft,

@@ -45,4 +45,5 @@ class SocketCan {
   std::string m_interface;
   SocketMode m_socket_mode;
 };
+
 }  // namespace scpp

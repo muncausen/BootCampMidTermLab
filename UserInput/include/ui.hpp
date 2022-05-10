@@ -1,4 +1,6 @@
 #include <curses.h>
+
+#include <atomic>
 #include <mutex>
 
 #include "candb.hpp"
@@ -46,10 +48,7 @@ const int k_s = 115;
  */
 class UserInput {
  public:
-  UserInputCanFrame can_frame_bitfield{};
-
-  // Input char
-  int ch{};
+  int ch{};  //!< Input char value.
 
   bool Cmd();
   void UpdateCanFrameBitfield();
@@ -57,19 +56,24 @@ class UserInput {
   void SetGear(const Gear&);
   void SetThrottle(const Pedal&);
   void SetBrake(const Pedal&);
-  void SetBlinker(const Blinker&);
+  void SetTurnIndicator(const TurnIndicator&);
+  void StartCanSender();
+  void StopCanSender();
 
-  /*! \todo Make these private!  */
-  // Input request variables
+ private:
+  UserInputCanFrame can_frame_bitfield{};
   Ignition ignition{};
   Gear gear_selection{};
   Pedal throttle{};
   Pedal brake{};
-  Blinker blinker{};
+  TurnIndicator turn_indicator{};
+  std::atomic<bool> can_sender_run{};
+  std::mutex mx{};
+
+  void CanSend();
 };
 
 void InitNcurses();
-void SendToCan(const bool&, const UserInputCanFrame&, std::mutex&);
 
 }  // namespace ui
 

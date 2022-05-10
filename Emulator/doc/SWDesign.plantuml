@@ -12,13 +12,13 @@ package "DriveLine" {
 }
 
 package "Display" {
-  [CANReciever]
+  [CANReceiver]
   [display]
 }
 
 [CANTransmitter] --> [CANTransiever] : vcan0
 [CANTransiever] <-> [Server]
-[CANTransiever] --> [CANReciever] : vcan0
-[CANReciever] --> [display]
+[CANTransiever] --> [CANReceiver] : vcan0
+[CANReceiver] --> [display]
 
 @enduml

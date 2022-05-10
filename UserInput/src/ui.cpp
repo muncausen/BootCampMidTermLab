@@ -21,44 +21,6 @@ void InitNcurses() {
 }
 
 /*!
- * \brief Populates a can frame and sends it on the CAN bus.
- *
- * \param run[in] Boolean for exitinf while loop.
- * \param uibf[in] The user input bitfield containing data to send.
- * \param mx[in] Mutex to not conflict with main thread.
- */
-void SendToCan(const bool& run, const UserInputCanFrame& uibf, std::mutex& mx) {
-  scpp::SocketCan socket_can;
-
-  if (socket_can.open("vcan0") != scpp::STATUS_OK) {
-    std::cout << "Cannot open vcan0." << std::endl;
-    std::cout << "Check whether the vcan0 interface is up!" << std::endl;
-    return;
-  }
-
-  while (run) {
-    scpp::CanFrame cf_to_write;
-
-    cf_to_write.id = 123;
-    cf_to_write.len = sizeof(uibf);
-
-    // Lock mutex and update.
-    {
-      std::lock_guard<std::mutex> lk(mx);
-      std::memcpy(cf_to_write.data, &uibf, sizeof(uibf));
-    }
-
-    auto write_sc_status = socket_can.write(cf_to_write);
-    if (write_sc_status != scpp::STATUS_OK) {
-      printf("something went wrong on socket write, error code : %d \n", int32_t(write_sc_status));
-    }
-
-    // Send CAN frame periodically.
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  }
-}
-
-/*!
  * \brief Command handling function.
  *
  * \return true so long as the application is supposed to run.
@@ -176,12 +138,13 @@ bool UserInput::Cmd() {
  * \brief Increment frame counter and updates the bitfield data from the private variables.
  */
 void UserInput::UpdateCanFrameBitfield() {
+  std::lock_guard<std::mutex> lk(this->mx);
   this->can_frame_bitfield.frame_counter++;
   this->can_frame_bitfield.ignition = static_cast<uint>(this->ignition);
   this->can_frame_bitfield.gear_select = static_cast<uint>(this->gear_selection);
   this->can_frame_bitfield.throttle = static_cast<uint>(this->throttle);
   this->can_frame_bitfield.brake = static_cast<uint>(this->brake);
-  this->can_frame_bitfield.blinkers = static_cast<uint>(this->blinker);
+  this->can_frame_bitfield.turn_indicator = static_cast<uint>(this->turn_indicator);
 }
 
 /*!
@@ -294,6 +257,63 @@ void UserInput::SetBrake(const Pedal& ped) {
   if (Pedal::kZero <= ped && ped <= Pedal::kOneHundred) {
     this->brake = ped;
     std::cout << "Brake: " << static_cast<int>(this->brake) << " %\n";
+  }
+}
+
+/*!
+ * \brief Set state of turn indicator.
+ *
+ * \param ti Turn indicator value based on user input.
+ * \todo Implement this input.
+ */
+void UserInput::SetTurnIndicator(const TurnIndicator& ti) {}
+
+/*!
+ * \brief Starts the CanSender() thread and detaches it.
+ *
+ */
+void UserInput::StartCanSender() {
+  this->can_sender_run = true;
+  std::thread can_thread(&ui::UserInput::CanSend, this);
+  can_thread.detach();
+}
+
+/*!
+ * \brief Stops the CanSender() thread.
+ *
+ */
+void UserInput::StopCanSender() { this->can_sender_run = false; }
+
+/*!
+ * \brief Populates a can frame and sends it on the CAN bus. Intended to run in own thread.
+ *
+ */
+void UserInput::CanSend() {
+  scpp::SocketCan socket_can;
+
+  if (socket_can.open("vcan0") != scpp::STATUS_OK) {
+    std::cout << "Cannot open vcan0." << std::endl;
+    std::cout << "Check whether the vcan0 interface is up!" << std::endl;
+    return;
+  }
+
+  scpp::CanFrame can_frame;
+  can_frame.id = static_cast<uint32_t>(CanFrameId::kUserInputCanFrameId);
+  can_frame.len = sizeof(this->can_frame_bitfield);
+
+  while (this->can_sender_run) {
+    {  // Lock mutex and update.
+      std::lock_guard<std::mutex> lk(this->mx);
+      std::memcpy(can_frame.data, &this->can_frame_bitfield, sizeof(this->can_frame_bitfield));
+    }  // Realese at end of scope.
+
+    auto write_status = socket_can.write(can_frame);
+    if (write_status != scpp::STATUS_OK) {
+      printf("something went wrong on socket write, error code : %d \n", int32_t(write_status));
+    }
+
+    // Send CAN frame periodically.
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 

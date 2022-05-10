@@ -25,6 +25,7 @@ struct DisplayCanFrame {
   unsigned speed : 8;
   unsigned rpm : 8;
   unsigned blinkers : 2;
+  unsigned automatic_gear : 3;
 };
 
 /*!

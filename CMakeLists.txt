@@ -9,6 +9,7 @@ project(BootCampProject
 
 add_subdirectory(UserInput)
 add_subdirectory(Emulator)
+add_subdirectory(Display)
 
 target_compile_options(ui
 PUBLIC

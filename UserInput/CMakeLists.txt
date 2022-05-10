@@ -13,7 +13,9 @@ add_executable(ui
   ../Common/src/socketcan.cpp
 )
 
-add_subdirectory(test)
+if(BUILD_TESTS)
+  add_subdirectory(test)
+endif(BUILD_TESTS)
 
 target_link_libraries(ui
 PUBLIC

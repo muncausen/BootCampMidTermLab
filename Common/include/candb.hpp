@@ -1,6 +1,8 @@
 #ifndef CANDB_HPP_
 #define CANDB_HPP_
 
+#include <cinttypes>
+
 /*!
  * \brief CAN frame structure from user input to emulator module.
  *
@@ -28,14 +30,13 @@ struct DisplayCanFrame {
   unsigned automatic_gear : 3;  //!< Current gear engaged, 3 bit.
 };
 
+
 /*!
- * \brief Enum representation of CAN frame IDs.
+ * \brief Const CAN frame IDs.
  *
  */
-enum class CanFrameId {
-  kUserInputCanFrameId = 0,
-  kDisplayCanFrameId,
-};
+static const uint32_t kUserInputCanFrameId{0x0AA};
+static const uint32_t kDisplayCanFrameId{0x0BB};
 
 /*!
  * \brief Enum representation of ignition state.

@@ -41,6 +41,7 @@ bool UserInput::Cmd() {
     case key::k_S:
     case key::k_s:
       this->SetIgnition();
+      break;
 
     case key::k_0:
       this->SetThrottle(Pedal::kZero);
@@ -266,13 +267,16 @@ void UserInput::SetBrake(const Pedal& ped) {
  * \param ti Turn indicator value based on user input.
  * \todo Implement this input.
  */
-void UserInput::SetTurnIndicator(const TurnIndicator& ti) {}
+void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
+  // this->can_frame_bitfield.turn_indicator = static_cast<uint>(ti);
+  this->turn_indicator = ti;
+}
 
 /*!
  * \brief Starts the CanSender() thread and detaches it.
  *
  */
-void UserInput::StartCanSender() {
+void UserInput::StartCanSenderThread() {
   this->can_sender_run = true;
   std::thread can_thread(&ui::UserInput::CanSend, this);
   can_thread.detach();
@@ -282,7 +286,7 @@ void UserInput::StartCanSender() {
  * \brief Stops the CanSender() thread.
  *
  */
-void UserInput::StopCanSender() { this->can_sender_run = false; }
+void UserInput::StopCanSenderThread() { this->can_sender_run = false; }
 
 /*!
  * \brief Populates a can frame and sends it on the CAN bus. Intended to run in own thread.
@@ -297,20 +301,16 @@ void UserInput::CanSend() {
     return;
   }
 
-  scpp::CanFrame can_frame;
-  can_frame.id = static_cast<uint32_t>(CanFrameId::kUserInputCanFrameId);
-  can_frame.len = sizeof(this->can_frame_bitfield);
+  scpp::SocketCanStatus write_status{};
 
   while (this->can_sender_run) {
     {  // Lock mutex and update.
       std::lock_guard<std::mutex> lk(this->mx);
-      std::memcpy(can_frame.data, &this->can_frame_bitfield, sizeof(this->can_frame_bitfield));
+      write_status =
+          socket_can.write(kUserInputCanFrameId, sizeof(this->can_frame_bitfield), 0, &this->can_frame_bitfield);
     }  // Realese at end of scope.
 
-    auto write_status = socket_can.write(can_frame);
-    if (write_status != scpp::STATUS_OK) {
-      printf("something went wrong on socket write, error code : %d \n", int32_t(write_status));
-    }
+    if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
 
     // Send CAN frame periodically.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));

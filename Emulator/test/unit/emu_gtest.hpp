@@ -6,7 +6,6 @@
 
 #include "can_tranceiver.hpp"
 #include "engine.hpp"
-#include "server.hpp"
 using namespace std;
 
 class TestEmulator : public ::testing::Test {
@@ -20,7 +19,6 @@ class TestEmulator : public ::testing::Test {
     cout << "TEST:: Frame_Cntr: " << test_cfr.frame_counter << endl;
   }
   CanTranceiver* can_receiver_ = nullptr;
-  Server* server_ = nullptr;
   UserInputCanFrame testcfr;
   Engine* engine = nullptr;
 };

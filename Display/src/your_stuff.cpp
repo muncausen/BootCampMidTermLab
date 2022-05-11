@@ -11,16 +11,17 @@
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
   DisplayCanFrame display_can_frame;
   switch (_frame->can_id) {
-    case 99: {  // change to can_id
-      // memcpy of bitfields
-      memcpy(&display_can_frame, _frame->data, sizeof(_frame->data));
+    case 0x123: {  // change to can_id
+      //memcpy of bitfields
+      memcpy(&display_can_frame, _frame->data, sizeof(DisplayCanFrame));
       this->InstrumentCluster.ignite(display_can_frame.ignition);
       this->InstrumentCluster.setRPM(display_can_frame.rpm);
       this->InstrumentCluster.setSpeed(display_can_frame.speed);
       this->InstrumentCluster.setGearPindle_int(display_can_frame.automatic_gear);
       this->InstrumentCluster.setGear(display_can_frame.gear_select);
-      this->InstrumentCluster.setTXT ("Engine is ON");
-     
+      this->InstrumentCluster.setTXT("Engine is ON");
+      
+
     } break;
     default:
       break;

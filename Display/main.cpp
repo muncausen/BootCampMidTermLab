@@ -1,6 +1,6 @@
 #include <QtQml/qqml.h>
 
-#include <QStringListModel>
+#include <QtCore/QStringListModel>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QProcess>
 #include <QtCore/QUrlQuery>

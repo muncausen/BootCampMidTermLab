@@ -1,20 +1,40 @@
-
-
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(DriveLine VERSION 1.0)
+project(BootCampProject
+  VERSION 1.0
+  LANGUAGES CXX
+)
 
-add_subdirectory(DriveLine)
+# if(DEFINED BUILD_TESTS)
+#   add_subdirectory(test)
+# endif(DEFINED BUILD_TESTS)
 
-if(DEFINED BUILD_TESTS)
-  add_subdirectory(test)
-endif(DEFINED BUILD_TESTS)
+add_library(drivelib
+STATIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/can_tranceiver.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../Common/src/socketcan.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/engine.cpp
+)
 
-# if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "amd64")#
-#   enable_testing()
-#   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
-# endif()
+target_include_directories(drivelib
+PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/../Common/include
+)
 
-#include(clang-dev-tools.cmake)
+add_executable(simulator
+  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+)
+
+# Locate GTest
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+target_link_libraries(simulator PUBLIC
+  drivelib
+  gtest
+  gtest_main
+  ${GTEST_LIBRARIES} pthread
+)

@@ -13,7 +13,7 @@ void TestEmulator::SetUp(){
     thread opencan_thread(&CanTranceiver::OpenCan, can_receiver_);
     opencan_thread.join();
 while (testcfr.frame_counter == 0) {
-        thread receive_can_thread(&CanTranceiver::CanFromUI, can_receiver_);
+        thread receive_can_thread(&CanTranceiver::CanReceive, can_receiver_);
         receive_can_thread.join();
         thread start_emulate(&Server::StartEmulate, server_, can_receiver_->getCanFrame());
         start_emulate.join();

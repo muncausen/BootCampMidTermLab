@@ -306,8 +306,8 @@ void UserInput::CanSend() {
   while (this->can_sender_run) {
     {  // Lock mutex and update.
       std::lock_guard<std::mutex> lk(this->mx);
-      write_status = socket_can.write(static_cast<uint32_t>(CanFrameId::kUserInputCanFrameId),
-                                      sizeof(this->can_frame_bitfield), 0, &this->can_frame_bitfield);
+      write_status =
+          socket_can.write(kUserInputCanFrameId, sizeof(this->can_frame_bitfield), 0, &this->can_frame_bitfield);
     }  // Realese at end of scope.
 
     if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";

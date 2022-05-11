@@ -1,6 +1,5 @@
 #include "engine.hpp"
-
-#include "ui.hpp"
+#include "candb.hpp"
 
 void Engine::GearCalc(const uint8_t& throtle, const uint8_t& user_gear, const uint8_t& ignition, const uint8_t& brake) {
   clock_t d[]{2 * CLOCKS_PER_SEC, 15 * CLOCKS_PER_SEC, 8 * CLOCKS_PER_SEC, 5 * CLOCKS_PER_SEC, 2 * CLOCKS_PER_SEC};

@@ -32,6 +32,6 @@ void Server::PrintEngine(const UserInputCanFrame& can_data) {
   printf("S: Requested Acceleration : %d \n", can_data.throttle);
   printf("S: User Gear : %d \n", can_data.gear_select);
   printf("S: Brake Requested : %d \n", can_data.brake);
-  printf("S: TI : %d \n", can_data.blinkers);
+  printf("S: TI : %d \n", can_data.turn_indicator);
   printf("S: Automatic Gear : %d \n", auto_gear_);
 }

@@ -55,6 +55,7 @@ class UserInput {
  public:
   int ch{};  //!< Input char value.
 
+  UserInput() = default;
   bool Cmd();
   void UpdateCanFrameBitfield();
   void SetIgnition();
@@ -62,8 +63,8 @@ class UserInput {
   void SetThrottle(const Pedal&);
   void SetBrake(const Pedal&);
   void SetTurnIndicator(const TurnIndicator&);
-  void StartCanSender();
-  void StopCanSender();
+  void StartCanSenderThread();
+  void StopCanSenderThread();
 
  private:
   UserInputCanFrame can_frame_bitfield{};

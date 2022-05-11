@@ -14,7 +14,7 @@ int main() {
   ui::InitNcurses();
 
   // std::thread can_thread(&ui.CanSend);
-  ui.StartCanSender();
+  ui.StartCanSenderThread();
 
   // Will loop until false is returned from input check.
   while (run) {
@@ -24,7 +24,7 @@ int main() {
     }
   }
 
-  ui.StopCanSender();
+  ui.StopCanSenderThread();
 
   return endwin();
 }

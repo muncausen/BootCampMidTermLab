@@ -117,6 +117,28 @@ SocketCanStatus SocketCan::write(const CanFrame &msg) {
   return STATUS_OK;
 }
 
+SocketCanStatus SocketCan::write(const uint32_t id, const uint8_t len, const uint8_t flags, const void* data) {
+  struct canfd_frame frame;
+  memset(&frame, 0, sizeof(frame)); /* init CAN FD frame, e.g. LEN = 0 */
+  // convert CanFrame to canfd_frame
+  frame.can_id = id;
+  frame.len = len;
+  frame.flags = flags;
+  memcpy(frame.data, data, len);
+
+  if (m_socket_mode == MODE_CANFD_MTU) {
+    /* ensure discrete CAN FD length values 0..8, 12, 16, 20, 24, 32, 64 */
+    frame.len = can_dlc2len(can_len2dlc(frame.len));
+  }
+  /* send frame */
+  if (::write(m_socket, &frame, int(m_socket_mode)) != int(m_socket_mode)) {
+    perror("write");
+    return STATUS_WRITE_ERROR;
+  }
+
+  return STATUS_OK;
+}
+
 SocketCanStatus SocketCan::read(CanFrame &msg) {
   struct canfd_frame frame;
 

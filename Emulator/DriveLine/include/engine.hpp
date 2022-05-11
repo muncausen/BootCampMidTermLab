@@ -15,24 +15,39 @@ class Engine {
   int speed_{0};
   int gear_{0};
   
- public:
-  const static int MAX_GEAR = 6;
-  // RPM is a variable of throtle and Gear
-  const static int GEAR_TRANSISSION = 4;
-  int g = MAX_GEAR + GEAR_TRANSISSION;
-  // speed is a variable of Rpm, Gear and if car is in movable mode(gear&ignition)
-  // if gear != 0 means ignotion = kOn
-  // if Ignition is kOn the:
-  // Gear is auto, we assume the load is constant
-  // if gear is higer than kPark then will increas constantly in time a max.
-  void EngineSimulation(const uint8_t&,unsigned int&, unsigned int&, unsigned int&);
-  void Delay(const clock_t&);
-  bool GearChange(int &rpm, const int &rpm_start, const int &rpm_end);
-  int GearIndx= 2;
-  int SpeedIndx= 1;
-  int from_throttle{0};
+  public:
+    // RPM is a variable of throtle and Gear
+    // speed is a variable of Rpm, Gear and if car is in movable mode(gear&ignition)
+    // if gear != 0 means ignotion = kOn
+    // if Ignition is kOn the:
+    // Gear is auto, we assume the load is constant
+    // if gear is higer than kPark then will increas constantly in time a max.
+    enum class UsageMode{
+      kOff,       //Ignition == kOff
+      kAvalaible, //Ignition== kOn && Gear == kPark
+      kMovable,   //Ignition == kOn && Gear = kNeutral
+      kDrive,     //Ignition == kOn && Gear == kDrive
+      kRevers     // Ignition == kOn && Gear kReverse
+    };
+    int from_throttle{0};
 
-  vector<vector<vector<int>>> T{
+    const static int MAX_GEAR = 6;
+    const static int GEAR_TRANSISSION = 4;
+    int g = GEAR_TRANSISSION + MAX_GEAR;
+    const static int GEAR_INDEX= 2;
+    const static int SPEED_INDEX= 1;
+    const static int SPEED_STEP{4};
+    const static int GEAR_STEP{80};
+    const static clock_t DELAY_UP = 1;
+    const static clock_t DELAY_DOWN = 5;
+    void Delay(const clock_t&);
+    bool SpeedRPMCalc(int &rpm, const int &rpm_start, const int &rpm_end, const int&);
+    UsageMode usage_mode{UsageMode::kOff};
+    void SetUsageMode(const uint8_t&, const uint8_t&);
+    bool Torquerequest(const uint8_t&, const uint8_t&, const uint8_t&);
+    void EngineSimulation(const uint8_t&, const UsageMode&);
+
+    vector<vector<vector<int>>> T{
       /*th0%*/  {{0, 0, 750},    {0, 0, 750},   {0, 0, 750},   {0, 0, 750},   {0, 0, 750},    {0, 0, 750},    {0, 0, 750},    {0, 0, 750},    {0, 0, 750},    {0, 0, 750},    {0, 0, 750}},   //NO_LINT
       /*th10%*/ {{1, 6, 1000},   {1, 6, 620},   {2, 9, 1000},  {2, 9, 620},   {3, 15, 1000},  {3, 15, 1000},  {3, 15, 1000},  {3, 15, 1000},  {3, 15, 1000},  {3, 15, 1000},  {3, 15, 1000}}, //NO_LINT
       /*th20%*/ {{1, 13, 1200},  {1, 13, 720},  {2, 18, 1200}, {2, 18, 720},  {3, 26, 1200},  {3, 26, 1200},  {3, 26, 1200},  {3, 26, 1200},  {3, 26, 1200},  {3, 26, 1200},  {3, 26, 1200}}, //NO_LINT
@@ -44,8 +59,11 @@ class Engine {
       /*th80%*/ {{1, 50, 4000},  {1, 50, 2800}, {2, 72, 4000}, {2, 72, 2800}, {3, 105, 4000}, {3, 105, 2800}, {4, 150, 4000}, {4, 150, 2800}, {5, 178, 4000}, {5, 178, 2800}, {6, 268, 4000}},//NO_LINT
       /*th90%*/ {{1, 57, 4500},  {1, 57, 3200}, {2, 81, 4500}, {2, 81, 3200}, {3, 118, 4500}, {3, 118, 3200}, {4, 169, 4500}, {4, 169, 3200}, {5, 201, 4500}, {5, 201, 3200}, {6, 301, 4500}},//NO_LINT
       /*th100%*/ {{1, 63, 5000}, {1, 63, 3800}, {2, 91, 5000}, {2, 91, 3800}, {3, 131, 5000}, {3, 131, 3800}, {4, 187, 5000}, {4, 187, 3800}, {5, 223, 5000}, {5, 223, 3800}, {6, 335, 5000}}};//NO_LINT
-
-  
-  // const static clock_t delay = 1 * CLOCKS_PER_SEC;
-};
+      }; // class ENGINE END 
+  const static uint8_t IGNITION_STATE_KON = 1;
+  const static uint8_t IGNITION_STATE_KOFF = 0;
+  const static uint8_t GEAR_STATE_KPARK = 0;
+  const static uint8_t GEAR_STATE_KREVERSE = 1;
+  const static uint8_t GEAR_STATE_KNEUTRAL = 2;
+  const static uint8_t GEAR_STATE_KDRIVE = 3;
 #endif  // #ifndef ENGINE_HPP

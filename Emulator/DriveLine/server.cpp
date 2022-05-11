@@ -9,7 +9,7 @@ if ((can_data.frame_counter != 0) &&
 (can_data.throttle != prev_throttle)) {
 //     printf("S: Requested Acceleration : %d \n", can_data.throttle);
 //     printf("S: CNTR : %d \n", can_data.frame_counter);
-    engine->EngineSimulation(can_data.throttle, rpm, speed, gear);
+    engine->Torquerequest(can_data.throttle, can_data.ignition, can_data.gear_select/*,rpm, speed, gear*/);
     can_data_to_disp.ignition = can_data.ignition;
     can_data_to_disp.blinkers = can_data.blinkers;
     can_data_to_disp.gear_select = can_data.gear_select;

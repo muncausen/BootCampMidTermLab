@@ -1,8 +1,9 @@
 
 #ifndef CAN_RECEIVER_HPP
 #define CAN_RECEIVER_HPP
-#include <atomic>
 #include <iostream>
+#include <mutex>
+#include <atomic>
 
 #include "candb.hpp"
 #include "socketcan.hpp"
@@ -10,16 +11,8 @@
 class CanTranceiver {
  public:
   CanTranceiver() = default;
-  //  CanDispData can_data;  // test using shift and & methode
-  bool OpenCan();
-  void CanReceive();
-  void CanSend();
-  std::atomic<bool> tranceiver_run{true};
-
- private:
+  void CanReceive(UserInputCanFrame&, std::mutex&, std::atomic<bool>&);
+  void CanSend(DisplayCanFrame&, std::mutex&, std::atomic<bool>&);
 };
 
-//} //namespace CanReceiver
-
-//
 #endif

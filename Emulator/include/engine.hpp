@@ -42,10 +42,11 @@ class Engine {
   //  int g = GEAR_TRANSISSION + MAX_GEAR;
     const static int RPM_INDEX= 2;
     const static int SPEED_INDEX= 1;
-    const static int SPEED_STEP{5};
-    const static int GEAR_STEP{10};
+    const static int SPEED_STEP{2};
+    const static int RPM_STEP{50};
     const static clock_t DELAY_UP = 1;
-    const static clock_t DELAY_DOWN = 3;
+    const static clock_t DELAY_DOWN = 1;
+    unsigned int prev_indata_cntr{0};
     void Delay(const clock_t&);
     bool SpeedRPMCalc(int &rpm, const int &rpm_start, const int &rpm_end, const int);
     bool SpeedRPMCalcDec(int &val, const int &val_start, const int &val_end, const int step);

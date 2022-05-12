@@ -10,10 +10,10 @@ bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& ou
 
     usage_mode = SetUsageMode(from_ui.ignition, from_ui.gear_select);
     EngineSimulation(from_ui.throttle, usage_mode, out_data);
+
     return true;
 }
 Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned& user_gear){
-    // cout << "Set up Usage mode..." << endl;
     switch (ignition) {
         case IGNITION_STATE_KOFF: //Ignition::kOff
             usage_mode = UsageMode::kOff;
@@ -41,8 +41,8 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
     return usage_mode;
 }
 void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mode, DisplayCanFrame& out_data) {
+
     const int to_throttle = (to_thr/10); //change % to number(T index)
-//    printf("ENGINE*****: Requested Acceleration : %d \n", to_throttle);
     int g_t=0;
     int g = MAX_GEAR + GEAR_TRANSISSION;
     int rpm_{T[from_throttle][g][RPM_INDEX]}; // to start calculating gear and speed from the ongoing state 
@@ -57,7 +57,7 @@ void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mod
         if (T[to_throttle][g_t][SPEED_INDEX] >= T[from_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX]){ // to find speed in to_thr match the final speed in from_throttle to jump to proper culumn of to_thr
             break;
         }}
-    if (from_throttle != to_throttle){
+//    if (from_throttle != to_throttle){
         from_rpm = T[from_throttle][g][RPM_INDEX];
         for (g = g_t; g<MAX_GEAR + GEAR_TRANSISSION+1 ; g++){
             fb_gear = true;
@@ -72,35 +72,74 @@ void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mod
             do{
                 Delay(coef);
                 if (up_down){
-                fb_gear = SpeedRPMCalc(rpm_, from_rpm, to_rpm,GEAR_STEP);
+                fb_gear = SpeedRPMCalc(rpm_, from_rpm, to_rpm,RPM_STEP);
                 fb_speed = SpeedRPMCalc(speed_, from_spd, to_spd,  SPEED_STEP);
                 } else{
                 fb_speed = SpeedRPMCalcDec(speed_, from_spd, to_spd,  SPEED_STEP);
-                fb_gear = SpeedRPMCalcDec(rpm_, from_rpm, to_rpm,GEAR_STEP);
+                fb_gear = SpeedRPMCalcDec(rpm_, from_rpm, to_rpm,RPM_STEP);
                 }
                 /*                    */
                 {
                 std::lock_guard<std::mutex> out_lock(out_data_mutex);
-                out_data.rpm = rpm_;
-                out_data.speed = speed_;
-                out_data.automatic_gear = gear_;
+                switch (usage_mode)
+                {
+                case UsageMode::kDrive:
+                cout << "Drive mode \n";
+                  out_data.rpm = rpm_;
+                  out_data.speed = speed_;
+                  out_data.automatic_gear = gear_;
+                  out_data.gear_select = in_data.gear_select;
+                  out_data.ignition = in_data.ignition;
+                  break;
+                case UsageMode::kMovable:
+                cout << "Movable \n";
+                  out_data.rpm = rpm_;
+                  out_data.speed = 0;
+                  out_data.automatic_gear = 0;
+                  out_data.gear_select = in_data.gear_select;
+                  out_data.ignition = in_data.ignition;
+                  break;
+                case UsageMode::kOff:
+                cout << "OFF mode \n";
+                  out_data.rpm = 0;
+                  out_data.speed = 0;
+                  out_data.automatic_gear = 0;
+                  out_data.gear_select = in_data.gear_select;
+                  out_data.ignition = in_data.ignition;
+                  break;
+                case UsageMode::kRevers:
+                cout << "Revers mode \n";
+                  out_data.rpm = rpm_;
+                  out_data.speed = speed_/10;
+                  out_data.automatic_gear = gear_;
+                  out_data.gear_select = in_data.gear_select;
+                  out_data.ignition = in_data.ignition;
+                  break;
+                default:
+                  out_data.rpm = 0;
+                  out_data.speed = 0;
+                  out_data.automatic_gear = 0;
+                  out_data.gear_select = in_data.gear_select;
+                  out_data.ignition = in_data.ignition;
+                  break;
                 }
-                printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d GG %d  \n", rpm_, speed_, gear_, g);
-        //                server_obj.GetEngineValues(rpm_, speed_, gear_);
+                }
+                printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d  usage mode %d \n",
+                 out_data.rpm, out_data.speed, out_data.automatic_gear, usage_mode);
             } while (fb_gear || fb_speed);
             from_spd = T[to_throttle][g][SPEED_INDEX];
             from_rpm = T[to_throttle][g][RPM_INDEX];
             rpm_ = from_rpm;
             speed_ = from_spd;
         }
-    }
+//    }
     from_throttle = to_throttle;
 }
 
 bool Engine::SpeedRPMCalc(int &val, const int &val_start, const int &val_end, const int step) {
  int val_out= 0;
     bool val_feedback{false};
-    val_out = val_end > val_start ? val + (val_end-val_start)/step: val - /*(val_start-val_end)/*/step;
+    val_out = val_end > val_start ? val + step: val - step;
     if (val_start < val_end){ //  got to Higher Throttle
         if ((val_out >= val_end) ){
             val = val_end;

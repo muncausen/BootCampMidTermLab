@@ -12,13 +12,11 @@ int main() {
   Server *server_ = nullptr;
   server_ = new Server;
   cout << "MAIN is runing..." << endl;
-  thread opencan_thread(&CanTranceiver::OpenCan, can_tranceiver_);
-  opencan_thread.join();
+  can_tranceiver_->OpenCan();
+//  thread opencan_thread(&CanTranceiver::OpenCan, can_tranceiver_);
+//  opencan_thread.join();
   while (true) {
-    thread receive_can_thread(&CanTranceiver::CanFromUI, can_tranceiver_);
-    //        printf("Cntr : %d \n", can_tranceiver_->getCanFrame().frame_cntr);
-    receive_can_thread.join();
-    thread start_emulate(&Server::StartEmulate, server_, can_tranceiver_->getCanFrame());
-    start_emulate.join();
+    can_tranceiver_->CanFromUI();
+    server_->StartEmulate(can_tranceiver_->getCanFrame());
   }
 }

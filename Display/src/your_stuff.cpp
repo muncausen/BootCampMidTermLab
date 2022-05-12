@@ -11,7 +11,7 @@
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
   DisplayCanFrame display_can_frame;
   switch (_frame->can_id) {
-    case 0x123: {  // change to can_id
+    case kDisplayCanFrameId: {  // change to can_id
       //memcpy of bitfields
       memcpy(&display_can_frame, _frame->data, sizeof(DisplayCanFrame));
       this->InstrumentCluster.ignite(display_can_frame.ignition);

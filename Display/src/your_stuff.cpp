@@ -1,6 +1,7 @@
 //#include <chrono>
 #include "your_stuff.hpp"
 
+#include <QtGui/QGuiApplication>
 #include <cstring>
 #include <iostream>
 #include <thread>
@@ -11,8 +12,7 @@
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
   DisplayCanFrame display_can_frame;
   switch (_frame->can_id) {
-    case 0x123: {  // change to can_id
-      //memcpy of bitfields
+    case kDisplayCanFrameId: {
       memcpy(&display_can_frame, _frame->data, sizeof(DisplayCanFrame));
       this->InstrumentCluster.ignite(display_can_frame.ignition);
       this->InstrumentCluster.setRPM(display_can_frame.rpm);
@@ -20,7 +20,6 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
       this->InstrumentCluster.setGearPindle_int(display_can_frame.automatic_gear);
       this->InstrumentCluster.setGear(display_can_frame.gear_select);
       this->InstrumentCluster.setTXT("Engine is ON");
-      
 
     } break;
     default:
@@ -44,6 +43,7 @@ bool yourStuff::run() {
   canfd_frame frame;
   this->CANReader.read(&frame);
   /*while*/ if (status == CANOpener::ReadStatus::OK) { this->YouHaveJustRecievedACANFrame(&frame); }
+  if (frame.can_id == kShutdownCanFrameId) ret = false;
   if (status == CANOpener::ReadStatus::ERROR)
     ret = false;
   else if (status == CANOpener::ReadStatus::NAVAL || status == CANOpener::ReadStatus::ENDOF)

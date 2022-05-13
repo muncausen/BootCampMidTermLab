@@ -65,6 +65,7 @@ class UserInput {
   void SetTurnIndicator(const TurnIndicator&);
   void StartCanSenderThread();
   void StopCanSenderThread();
+  void SendShutdown();
 
  private:
   UserInputCanFrame can_frame_bitfield{};

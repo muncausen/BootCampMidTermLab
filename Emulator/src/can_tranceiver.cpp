@@ -25,6 +25,8 @@ void CanTranceiver::CanReceive() {
       if (in_frame.id == kUserInputCanFrameId) {
         std::lock_guard<std::mutex> lock(in_data_mutex);
         memcpy(&in_data, in_frame.data, sizeof(in_data));
+      } else if (in_frame.id == kShutdownCanFrameId) {
+        this->tranceiver_run = false;
       }
     }
   }

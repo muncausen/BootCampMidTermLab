@@ -25,5 +25,6 @@ Repository [Engine Emulator](https://github.com/muncausen/BootCampMidTermLab/tre
 if RPM is considered as a representative of the throttle for each RPM one speed is targeted. the vehicle will gradually approach the top speed for given throttle using transmission system.
  ![Speed vs RPM](https://github.com/muncausen/BootCampMidTermLab/blob/engine_sim/Emulator/doc/rpm_vs_speed_gear.png)
  
- by increasing acceleration request a.k.a increasing throttle more RPM then higher speed will be reached.
- ![RPM-Gear]
+ by increasing acceleration request a.k.a increasing throttle, more RPM then higher speed will be reached.
+ below table depictes speed based on RPM and gear for a given car considering different gear ratios, friction, resistance etc. it also assumes that the load is constant.
+ ![RPM-Gear](https://github.com/muncausen/BootCampMidTermLab/blob/engine_sim/Emulator/doc/rpm_vs_speed_gear_t.png)

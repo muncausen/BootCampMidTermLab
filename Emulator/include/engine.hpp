@@ -42,14 +42,18 @@ class Engine {
   //  int g = GEAR_TRANSISSION + MAX_GEAR;
     const static int RPM_INDEX= 2;
     const static int SPEED_INDEX= 1;
-    const static int SPEED_STEP{2};
-    const static int RPM_STEP{50};
+    const static int SPEED_STEP{1};
+    const static int RPM_STEP{60};
     const static clock_t DELAY_UP = 1;
     const static clock_t DELAY_DOWN = 1;
+    clock_t Coef;
+
     unsigned int prev_indata_cntr{0};
     void Delay(const clock_t&);
-    bool SpeedRPMCalc(int &rpm, const int &rpm_start, const int &rpm_end, const int);
-    bool SpeedRPMCalcDec(int &val, const int &val_start, const int &val_end, const int step);
+    bool SmoothRpmIncrease(int &rpm, const int &rpm_start, const int &rpm_end, const int);
+    bool SmoothSpeedIncrease(int &rpm, const int &rpm_start, const int &rpm_end, const int);
+    bool SmoothSpeedDecrease(int &val, const int &val_start, const int &val_end, const int step);
+    bool SmoothRpmDecrease(int &val, const int &val_start, const int &val_end, const int step);
     UsageMode SetUsageMode(const unsigned&, const unsigned&);
     bool Torquerequest(const UserInputCanFrame&, DisplayCanFrame&);
     void EngineSimulation(const unsigned&, const UsageMode&, DisplayCanFrame&);

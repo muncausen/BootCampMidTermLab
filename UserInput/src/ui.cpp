@@ -35,6 +35,7 @@ bool UserInput::Cmd() {
     case key::k_Q:
     case key::k_q:
       std::cout << "Exiting\n";
+      this->SendShutdown();
       run = false;
       break;
 
@@ -315,6 +316,26 @@ void UserInput::CanSend() {
     // Send CAN frame periodically.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
+}
+/*!
+ * \brief Sends a shutdown frame id to the Emulator and Display module.
+ *
+ */
+void UserInput::SendShutdown() {
+  scpp::SocketCan socket_can_shutdown;
+  scpp::SocketCanStatus write_status{};
+  char c = 'd';  // Empty data
+
+  if (socket_can_shutdown.open("vcan0") != scpp::STATUS_OK) {
+    std::cout << "Cannot open vcan0." << std::endl;
+    std::cout << "Check whether the vcan0 interface is up!" << std::endl;
+    return;
+  }
+
+  // Sending dummy data with a shutdown ID
+  write_status = socket_can_shutdown.write(kShutdownCanFrameId, sizeof(c), 0, &c);
+  if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 }  // namespace ui

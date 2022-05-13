@@ -30,13 +30,13 @@ struct DisplayCanFrame {
   unsigned automatic_gear : 3;  //!< Current gear engaged, 3 bit.
 };
 
-
 /*!
  * \brief Const CAN frame IDs.
  *
  */
 static const uint32_t kUserInputCanFrameId{0x0AA};
 static const uint32_t kDisplayCanFrameId{0x0BB};
+static const uint32_t kShutdownCanFrameId{0x0CC};
 
 /*!
  * \brief Enum representation of ignition state.

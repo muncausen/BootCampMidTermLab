@@ -1,5 +1,11 @@
 #include "engine.hpp"
 
+
+/*!
+ * \brief Receives Acceleration request from the user on CAN bus
+ *
+ * \return True if requested values are inside boundaries.
+ */
 bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& out_data){
     {
     std::lock_guard<std::mutex> lock(in_data_mutex);
@@ -11,6 +17,11 @@ bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& ou
 
     return true;
 }
+/*!
+ * \brief Vehicle State. based on Ignition and Gear the user entered.
+ *
+ * \return UsageModes: Park, Available, Reverse, Movable, Drivable and Off
+ */
 Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned& user_gear){
     switch (ignition) {
         case IGNITION_STATE_KOFF: //Ignition::kOff
@@ -38,6 +49,11 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
     }
     return usage_mode;
 }
+/*!
+ * \brief Base on Throttle and UsageMode, calculates RPM, Speed and Gear
+ *
+ * \return Calculated values are stored in private members of Engine class.
+ */
 void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mode, DisplayCanFrame& out_data) {
 
     const int to_throttle = (to_thr/10); //change % to number(T index)
@@ -143,7 +159,13 @@ void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mod
     }
     from_throttle = to_throttle;
 }
-
+/*!
+ * \brief SmoothRpmIncrease and SmoothSpeedIncrease make it possible to move smoothly between RPMs and speed 
+ *
+ *
+ * \return true so long as the application is supposed to run.
+ * \return false when the application should stop and terminate.
+ */
 bool Engine::SmoothRpmIncrease(int &val, const int &val_start, const int &val_end, const int step) {
  int val_out= 0;
     bool val_feedback{false};

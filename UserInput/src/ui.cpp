@@ -324,6 +324,7 @@ void UserInput::CanSend() {
 void UserInput::SendShutdown() {
   scpp::SocketCan socket_can_shutdown;
   scpp::SocketCanStatus write_status{};
+  char c[0];  // Empty array data
 
   if (socket_can_shutdown.open("vcan0") != scpp::STATUS_OK) {
     std::cout << "Cannot open vcan0." << std::endl;
@@ -331,8 +332,8 @@ void UserInput::SendShutdown() {
     return;
   }
 
-  write_status =
-      socket_can_shutdown.write(kShutdownCanFrameId, sizeof(this->can_frame_bitfield), 0, &this->can_frame_bitfield);
+  // Sending dummy data with a shutdown ID
+  write_status = socket_can_shutdown.write(kShutdownCanFrameId, sizeof(c), 0, c);
   if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }

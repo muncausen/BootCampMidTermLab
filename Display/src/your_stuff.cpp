@@ -1,7 +1,6 @@
 //#include <chrono>
 #include "your_stuff.hpp"
 
-#include <QtGui/QGuiApplication>
 #include <cstring>
 #include <iostream>
 #include <thread>

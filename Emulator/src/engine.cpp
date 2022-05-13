@@ -59,7 +59,7 @@ void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mod
     const int to_throttle = (to_thr/10); //change % to number(T index)
     int g_t=0;
     int g = MAX_GEAR + GEAR_TRANSISSION;
-    int rpm_{T[from_throttle][g][RPM_INDEX]}; // to start calculating gear and speed from the ongoing state 
+    int rpm_{T[from_throttle][g][RPM_INDEX]}; // to start calculating gear and speed from the ongoing state
     int speed_{T[from_throttle][g][SPEED_INDEX]};
     bool fb_gear{false};
     bool fb_speed{false};
@@ -160,7 +160,7 @@ void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mod
     from_throttle = to_throttle;
 }
 /*!
- * \brief SmoothRpmIncrease and SmoothSpeedIncrease make it possible to move smoothly between RPMs and speed 
+ * \brief SmoothRpmIncrease and SmoothSpeedIncrease make it possible to move smoothly between RPMs and speed
  *
  *
  * \return true so long as the application is supposed to run.
@@ -179,7 +179,7 @@ bool Engine::SmoothRpmIncrease(int &val, const int &val_start, const int &val_en
             val_feedback = true;
             Coef = DELAY_UP;
         }
-    } else{      
+    } else{
           val = val_end;
           val_feedback = false;
     }
@@ -199,7 +199,7 @@ bool Engine::SmoothSpeedIncrease(int &val, const int &val_start, const int &val_
             val_feedback = true;
             Coef = DELAY_UP;
         }
-    } else{      
+    } else{
           val = val_end;
           val_feedback = false;
     }

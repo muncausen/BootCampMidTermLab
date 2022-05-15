@@ -40,7 +40,8 @@ class Engine {
     unsigned from_spd{0};
     int cntr{0};
     int prev_cntr{0};
-    void EngineSimulation(const unsigned&, const UsageMode&, DisplayCanFrame&, bool(*SmoothFcn)(unsigned&, const unsigned&, const unsigned&, const unsigned));
+    void EngineSimulation(const unsigned&, const UsageMode&, DisplayCanFrame&, clock_t,
+                          bool(*SmoothFcn)(unsigned&, const unsigned&, const unsigned&, const unsigned));
     void Delay(const clock_t&);
     static bool SmoothIncrease(unsigned&, const unsigned&, const unsigned&, const unsigned);
     static bool SmoothDecrease(unsigned&, const unsigned&, const unsigned&, const unsigned);
@@ -72,11 +73,12 @@ class Engine {
   const static unsigned RPM_STEP{45};
   static clock_t COEF;
   const static clock_t DELAY_UP = 1;
-  const static clock_t DELAY_DOWN = 1;
+  static clock_t DELAY_DOWN = 2;
   const static uint8_t IGNITION_STATE_KON = 1;
   const static uint8_t IGNITION_STATE_KOFF = 0;
   const static uint8_t GEAR_STATE_KPARK = 0;
   const static uint8_t GEAR_STATE_KREVERSE = 1;
   const static uint8_t GEAR_STATE_KNEUTRAL = 2;
   const static uint8_t GEAR_STATE_KDRIVE = 3;
+  const static int REVERES_SPEED_RATIO = 5;
 #endif  // #ifndef ENGINE_HPP

@@ -117,7 +117,7 @@ SocketCanStatus SocketCan::write(const CanFrame &msg) {
   return STATUS_OK;
 }
 
-SocketCanStatus SocketCan::write(const uint32_t id, const uint8_t len, const uint8_t flags, const void* data) {
+SocketCanStatus SocketCan::write(const uint32_t& id, const uint8_t& len, const uint8_t& flags, const void* data) {
   struct canfd_frame frame;
   memset(&frame, 0, sizeof(frame)); /* init CAN FD frame, e.g. LEN = 0 */
   // convert CanFrame to canfd_frame

@@ -86,7 +86,7 @@ enum class TurnIndicator {
   kOff = 0,
   kRight,
   kLeft,
-  kWarning,
+  kHazard,
 };
 
 #endif  // CANDB_HPP_

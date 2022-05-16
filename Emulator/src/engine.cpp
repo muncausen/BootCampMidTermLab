@@ -2,7 +2,7 @@
 /*
 in Neutral throttle = X
 Brake = 0
-go to Drive should speed up to throttle x
+go to Drive, it should speed up to throttle x
 but it waits for new throttle!!
 */
 
@@ -20,9 +20,6 @@ bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& ou
     }
     if (from_ui.brake)
         {from_ui.throttle = 0;}
-    out_data.gear_select = from_ui.gear_select;
-    out_data.ignition = from_ui.ignition;
-    out_data.turn_indicator = from_ui.turn_indicator;
     usage_mode = SetUsageMode(from_ui.ignition, from_ui.gear_select);
     if (from_ui.frame_counter != prev_cntr){
         if (in_data.throttle > prev_throttle){
@@ -31,7 +28,7 @@ bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& ou
             if (from_ui.brake){DELAY_DOWN = 0.5;}
             else{DELAY_DOWN = 2;}
             EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
-        } else {
+        } else { // Here is where changing UM will be taken care since same throttle but still something changed!
             if (usage_mode == UsageMode::kAvalaible){
                 from_ui.throttle = 0;
                 EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
@@ -80,10 +77,10 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
  *
  * \return Calculated values are stored in private members of Engine class.
  */
-void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mode, DisplayCanFrame& out_data, clock_t COEF,
+void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode& usage_mode, DisplayCanFrame& out_data, clock_t COEF,
                                                     bool(*SmoothFcn)(unsigned&, const unsigned&, const unsigned&, const unsigned)) {
 
-    const int to_throttle = (to_thr/10); //change % to number(T index)
+    const int to_throttle = (from_ui_throtthe/10); //change % to number(T index)
     int g = MAX_GEAR + GEAR_TRANSISSION;
     int g_t=0;
 
@@ -102,11 +99,12 @@ void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mod
                     fb_gear = SmoothFcn(rpm_, from_rpm, to_rpm,RPM_STEP);
                     fb_speed = SmoothFcn(speed_, from_spd, to_spd,  SPEED_STEP);
                    //unordered_map<UsageMode, DisplayCanFrame> out_data_map; 
-                    out_data_map[UsageMode::kDrive] = {0, 1, 0, speed_, rpm_, 0, gear_};
-                    out_data_map[UsageMode::kMovable] = {0, 1, 0, 0, rpm_, 0, 0};
-                    out_data_map[UsageMode::kAvalaible] = {0, 1, 0, 0, rpm_, 0, 0};
-                    out_data_map[UsageMode::kRevers] = {0, 1, 0, speed_/REVERES_SPEED_RATIO, rpm_, 0, gear_};
-                    out_data_map[UsageMode::kOff] = {0, 0, 0, 0, 0, 0, 0};
+            // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}         
+                    out_data_map[UsageMode::kDrive] =       {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_, rpm_, from_ui.turn_indicator, gear_};
+                    out_data_map[UsageMode::kMovable] =     {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
+                    out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
+                    out_data_map[UsageMode::kRevers] =      {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_/REVERES_SPEED_RATIO, rpm_, 0, gear_};
+                    out_data_map[UsageMode::kOff] =         {from_ui.frame_counter, from_ui.ignition, 0                  , 0                          ,0   , 0,  0};
                     /*                    */
                     {
                     std::lock_guard<std::mutex> out_lock(out_data_mutex);

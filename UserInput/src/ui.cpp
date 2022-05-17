@@ -127,6 +127,26 @@ bool UserInput::Cmd() {
       this->SetGear(Gear::kPrevious);
       break;
 
+    case key::k_J:
+    case key::k_j:
+      this->SetTurnIndicator(TurnIndicator::kLeft);
+      break;
+
+    case key::k_K:
+    case key::k_k:
+      this->SetTurnIndicator(TurnIndicator::kHazard);
+      break;
+
+    case key::k_L:
+    case key::k_l:
+      this->SetTurnIndicator(TurnIndicator::kRight);
+      break;
+
+    case key::k_I:
+    case key::k_i:
+      this->SetTurnIndicator(TurnIndicator::kOff);
+      break;
+
     default:
       std::cout << "Unknown command!\n";
       break;
@@ -268,7 +288,45 @@ void UserInput::SetBrake(const Pedal& ped) {
  */
 void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
   // this->can_frame_bitfield.turn_indicator = static_cast<uint>(ti);
-  this->turn_indicator = ti;
+  // this->turn_indicator = ti;
+  switch (ti) {
+    case TurnIndicator::kLeft:
+      this->turn_indicator = TurnIndicator::kLeft;
+      std::cout << "Turning Left!\n";
+      break;
+
+    case TurnIndicator::kRight:
+      this->turn_indicator = TurnIndicator::kRight;
+      std::cout << "Turning Right!\n";
+      break;
+
+    case TurnIndicator::kHazard:
+      this->turn_indicator = TurnIndicator::kHazard;
+      std::cout << "Hazard Lights Are ON!\n";
+      break;
+
+    case TurnIndicator::kOff:
+      this->turn_indicator = TurnIndicator::kOff;
+      std::cout << "Blinkers Are OFF!\n";
+      break;
+
+    default:
+      std::cout << "Wrong Blinker!\n";
+      break;
+  }
+  // if (ti == TurnIndicator::kLeft) {
+  //   this->turn_indicator = ti;
+  //   std::cout << "Turning Left!\n";
+  // } else if (ti == TurnIndicator::kRight) {
+  //   this->turn_indicator = ti;
+  //   std::cout << "Turning Right!\n";
+  // } else if (ti == TurnIndicator::kHazard) {
+  //   this->turn_indicator = ti;
+  //   std::cout << "Hazard Lights Are ON!\n";
+  // } else if (ti == TurnIndicator::kOff) {
+  //   this->turn_indicator = ti;
+  //   std::cout << "Blinkers Are OFF!\n";
+  // }
 }
 
 /*!

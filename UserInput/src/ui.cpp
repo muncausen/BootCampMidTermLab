@@ -91,8 +91,7 @@ bool UserInput::Cmd() {
     case key::k_period:
     case key::k_B:
     case key::k_b:
-      this->SetThrottle(Pedal::kZero);  // Abort cruise control!
-      this->SetBrake(Pedal::kOneHundred);
+      this->SetBrake(Pedal::kOneHundred);  // Cruise control aborts in simulation, meaning throttle is ignored.
       break;
 
     case key::k_D:
@@ -141,7 +140,6 @@ bool UserInput::Cmd() {
  */
 void UserInput::UpdateCanFrameBitfield() {
   std::lock_guard<std::mutex> lk(this->mx);
-  this->can_frame_bitfield.frame_counter++;
   this->can_frame_bitfield.ignition = static_cast<uint>(this->ignition);
   this->can_frame_bitfield.gear_select = static_cast<uint>(this->gear_selection);
   this->can_frame_bitfield.throttle = static_cast<uint>(this->throttle);
@@ -307,6 +305,7 @@ void UserInput::CanSend() {
   while (this->can_sender_run) {
     {  // Lock mutex and update.
       std::lock_guard<std::mutex> lk(this->mx);
+      this->can_frame_bitfield.frame_counter++;
       write_status =
           socket_can.write(kUserInputCanFrameId, sizeof(this->can_frame_bitfield), 0, &this->can_frame_bitfield);
     }  // Realese at end of scope.
@@ -332,10 +331,12 @@ void UserInput::SendShutdown() {
     return;
   }
 
-  // Sending dummy data with a shutdown ID
-  write_status = socket_can_shutdown.write(kShutdownCanFrameId, sizeof(c), 0, &c);
-  if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  // Sending 10 frames with dummy data with a shutdown ID
+  for (size_t i = 0; i < 10; i++) {
+    write_status = socket_can_shutdown.write(kShutdownCanFrameId, sizeof(c), 0, &c);
+    if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
 }
 
 }  // namespace ui

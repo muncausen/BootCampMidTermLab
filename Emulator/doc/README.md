@@ -22,13 +22,9 @@
 
 Repository [Engine Emulator](https://github.com/muncausen/BootCampMidTermLab/tree/main/Emulator).
 
-Each gear will drive a limited range of speed based on throtle.
-
-Requested Throtle | Gear     | speed upr  | speed lwr thr |
-| :---            | :---:    |    :----:  |         :---: |
-|0                | Gear 0   | 0          | 0             |
-|0 ~ 20           | Gear 1   | 0          | 20            |
-|20 ~ 40           | Gear 2   | 20         | 50            |
-|40 ~ 60           | Gear 3   | 50         | 80            |
-|60 ~ 80           | Gear 4   | 80         | 150           |
-|80 ~ 100           | Gear 5   | 150        | 180           |
+if RPM is considered as a representative of the throttle for each RPM one speed is targeted. the vehicle will gradually approach the top speed for given throttle using transmission system.
+ ![Speed vs RPM](https://github.com/muncausen/BootCampMidTermLab/blob/engine_sim/Emulator/doc/rpm_vs_speed_gear.png)
+ 
+ by increasing acceleration request a.k.a increasing throttle, more RPM then higher speed will be reached.
+ below table depictes speed based on RPM and gear for a given car considering different gear ratios, friction, resistance etc. it also assumes that the load is constant.
+ ![RPM-Gear](https://github.com/muncausen/BootCampMidTermLab/blob/engine_sim/Emulator/doc/rpm_vs_speed_gear_t.png)

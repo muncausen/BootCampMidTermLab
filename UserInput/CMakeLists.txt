@@ -8,7 +8,7 @@ project(BootCampProject
 )
 
 add_executable(ui
-  src/main.cpp
+  main.cpp
   src/ui.cpp
   ../Common/src/socketcan.cpp
 )

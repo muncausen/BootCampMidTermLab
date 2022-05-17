@@ -3,8 +3,10 @@
 #include <thread>
 
 #include "can_tranceiver.hpp"
+#include "engine.hpp"
 #include "io_data.hpp"
 
+Engine engine;
 int main() {
   // Create a CAN receiver/sender and spawn its threads.
   CanTranceiver can_tranceiver{};
@@ -16,11 +18,8 @@ int main() {
   while (tranceiver_run) {
     // Need to call engine calculations.
 
-    // Some dummy operation to prove data transfere.
     {
-      std::lock_guard<std::mutex> in_lock(in_data_mutex);
-      std::lock_guard<std::mutex> out_lock(out_data_mutex);
-      out_data.speed = in_data.throttle * 2;
+      engine.Torquerequest(in_data, out_data);
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
   }

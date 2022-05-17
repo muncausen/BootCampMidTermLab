@@ -2,7 +2,9 @@
 #include "your_stuff.hpp"
 
 #include <cstring>
+#include <iomanip>
 #include <iostream>
+#include <string>
 #include <thread>
 
 #include "can_common.hpp"
@@ -10,17 +12,67 @@
 
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
   DisplayCanFrame display_can_frame;
+
   switch (_frame->can_id) {
     case kDisplayCanFrameId: {
-      memcpy(&display_can_frame, _frame->data, sizeof(DisplayCanFrame));
+      memcpy(&display_can_frame, _frame->data, sizeof(display_can_frame));
+
       this->InstrumentCluster.ignite(display_can_frame.ignition);
       this->InstrumentCluster.setRPM(display_can_frame.rpm);
       this->InstrumentCluster.setSpeed(display_can_frame.speed);
-      this->InstrumentCluster.setGearPindle_int(display_can_frame.automatic_gear);
-      this->InstrumentCluster.setGear(display_can_frame.gear_select);
-      this->InstrumentCluster.setTXT("Engine is ON");
+      this->InstrumentCluster.setGear(display_can_frame.automatic_gear);
+
+      // Because .setGearPindle_int is barbarically implemented we need to do "conversion"
+      switch (display_can_frame.gear_select) {
+        case static_cast<unsigned int>(Gear::kPark):
+          this->InstrumentCluster.setGearPindle_int(0);
+          break;
+
+        case static_cast<unsigned int>(Gear::kReverse):
+          this->InstrumentCluster.setGearPindle_int(2);
+          break;
+
+        case static_cast<unsigned int>(Gear::kNeutral):
+          this->InstrumentCluster.setGearPindle_int(1);
+          break;
+
+        case static_cast<unsigned int>(Gear::kDrive):
+          this->InstrumentCluster.setGearPindle_int(3);
+          break;
+
+        default:
+          break;
+      }
+
+      struct _icons icons {};
+      switch (display_can_frame.turn_indicator) {
+        case static_cast<unsigned int>(TurnIndicator::kRight):
+          icons.right_blinker = 1;
+          icons.left_blinker = 0;
+          break;
+
+        case static_cast<unsigned int>(TurnIndicator::kLeft):
+          icons.right_blinker = 0;
+          icons.left_blinker = 1;
+          break;
+
+        case static_cast<unsigned int>(TurnIndicator::kHazard):
+          icons.hazard = 1;
+          break;
+
+        case static_cast<unsigned int>(TurnIndicator::kOff):
+          icons.right_blinker = 0;
+          icons.left_blinker = 0;
+          icons.hazard = 0;
+          break;
+
+        default:
+          break;
+      }
+      this->InstrumentCluster.setIcon(&icons);
 
     } break;
+
     default:
       break;
   }
@@ -38,18 +90,29 @@ yourStuff::yourStuff(const std::string &_ifName, QObject *_vs) {
 
 bool yourStuff::run() {
   bool ret = true;
-  CANOpener::ReadStatus status = CANOpener::ReadStatus::OK;
   canfd_frame frame;
-  this->CANReader.read(&frame);
-  /*while*/ if (status == CANOpener::ReadStatus::OK) { this->YouHaveJustRecievedACANFrame(&frame); }
-  if (frame.can_id == kShutdownCanFrameId) ret = false;
+  CANOpener::ReadStatus status = this->CANReader.read(&frame);
+
+  if (status == CANOpener::ReadStatus::OK) {
+    this->YouHaveJustRecievedACANFrame(&frame);
+  }
+
+  if (frame.can_id == kShutdownCanFrameId) {
+    ret = false;
+  }
+
   if (status == CANOpener::ReadStatus::ERROR)
     ret = false;
-  else if (status == CANOpener::ReadStatus::NAVAL || status == CANOpener::ReadStatus::ENDOF)
+  else if (status == CANOpener::ReadStatus::NAVAL || status == CANOpener::ReadStatus::ENDOF) {
     this->Counter++;
-  else
+  } else {
     this->Counter = 0;
-  // if (this->Counter > 200) ret = false;
+  }
+
+  // if (this->Counter > 2000) {
+  //   ret = false;
+  // }
+
   return ret;
 }
 

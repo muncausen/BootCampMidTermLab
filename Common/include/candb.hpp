@@ -24,8 +24,8 @@ struct DisplayCanFrame {
   unsigned frame_counter : 4;   //!< Incremental frame counter, 4 bit.
   unsigned ignition : 2;        //!< Ignition state, 2 bit.
   unsigned gear_select : 4;     //!< Gear selection PRND, 4 bit.
-  unsigned speed : 8;           //!< Vehicle speed, 8 bit.
-  unsigned rpm : 8;             //!< Engine RPM, 8 bit.
+  unsigned speed : 9;           //!< Vehicle speed, 9 bit.
+  unsigned rpm : 13;            //!< Engine RPM, 13 bit.
   unsigned turn_indicator : 2;  //!< Turn indicator incl. warning, 2 bit.
   unsigned automatic_gear : 3;  //!< Current gear engaged, 3 bit.
 };
@@ -86,7 +86,7 @@ enum class TurnIndicator {
   kOff = 0,
   kRight,
   kLeft,
-  kWarning,
+  kHazard,
 };
 
 #endif  // CANDB_HPP_

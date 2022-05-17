@@ -42,6 +42,7 @@ void CanTranceiver::CanSend(DisplayCanFrame& out_data, std::mutex& out_data_mute
   while (run) {
     {
       std::lock_guard<std::mutex> lock(out_data_mutex);
+      out_data.frame_counter++;
       write_sc_status = socket_can.write(kDisplayCanFrameId, sizeof(out_data), 0, &out_data);
     }
 
@@ -49,6 +50,6 @@ void CanTranceiver::CanSend(DisplayCanFrame& out_data, std::mutex& out_data_mute
       std::cout << "SocketCAN write error code: " << int32_t(write_sc_status) << "\n";
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }

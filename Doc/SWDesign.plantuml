@@ -1,0 +1,20 @@
+@startuml Swdesign
+left to right direction
+
+package "User Input" {
+  [Keyboard] --> [UI CAN Sender]
+}
+
+package "Drive Line Simulator" {
+  [Sim CAN Receiver] --> [Drive Line Simulator]
+  [Drive Line Simulator] --> [Sim CAN Sender]
+}
+
+package "Display" {
+  [Disp CAN Receiver] --> [Display]
+}
+
+[UI CAN Sender] --> [Sim CAN Receiver] : vcan0
+[Sim CAN Sender] --> [Disp CAN Receiver] : vcan0
+
+@enduml

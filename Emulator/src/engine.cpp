@@ -1,51 +1,19 @@
 #include "engine.hpp"
-/*
-in Neutral throttle = X
-Brake = 0
-go to Drive, it should speed up to throttle x
-but it waits for new throttle!!
-*/
 
+clock_t coef;
 
-
-/*!
- * \brief Receives Acceleration request from the user on CAN bus
- *
- * \return True if requested values are inside boundaries.
- */
 bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& out_data){
     {
     std::lock_guard<std::mutex> lock(in_data_mutex);
     from_ui = in_data;
     }
-    if (from_ui.brake)
-        {from_ui.throttle = 0;}
+
     usage_mode = SetUsageMode(from_ui.ignition, from_ui.gear_select);
-    if (from_ui.frame_counter != prev_cntr){
-        if (in_data.throttle > prev_throttle){
-            EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
-        } else if (in_data.throttle < prev_throttle) {
-            if (from_ui.brake){DELAY_DOWN = 0.5;}
-            else{DELAY_DOWN = 2;}
-            EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
-        } else { // Here is where changing UM will be taken care since same throttle but still something changed!
-            if (usage_mode == UsageMode::kAvalaible){
-                from_ui.throttle = 0;
-                EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
-            }
-//            EngineSimulation(from_ui.throttle, usage_mode, out_data, SameThrottle);
-        }
-        prev_throttle = from_ui.throttle;
-    }
-    prev_cntr = from_ui.frame_counter;
+    EngineSimulation(from_ui.throttle, usage_mode, out_data);
     return true;
 }
-/*!
- * \brief Vehicle State. based on Ignition and Gear the user entered.
- *
- * \return UsageModes: Park, Available, Reverse, Movable, Drivable and Off
- */
 Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned& user_gear){
+    // cout << "Set up Usage mode..." << endl;
     switch (ignition) {
         case IGNITION_STATE_KOFF: //Ignition::kOff
             usage_mode = UsageMode::kOff;
@@ -72,104 +40,106 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
     }
     return usage_mode;
 }
-/*!
- * \brief Base on Throttle and UsageMode, calculates RPM, Speed and Gear
- *
- * \return Calculated values are stored in private members of Engine class.
- */
-void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode& usage_mode, DisplayCanFrame& out_data, clock_t COEF,
-                                                    bool(*SmoothFcn)(unsigned&, const unsigned&, const unsigned&, const unsigned)) {
-
-    const int to_throttle = (from_ui_throtthe/10); //change % to number(T index)
-    int g = MAX_GEAR + GEAR_TRANSISSION;
+void Engine::EngineSimulation(const unsigned& to_thr, const UsageMode& usage_mode, DisplayCanFrame& out_data) {
+    const int to_throttle = (to_thr/10); //change % to number(T index)
+//    printf("ENGINE*****: Requested Acceleration : %d \n", to_throttle);
     int g_t=0;
-
+    int g = MAX_GEAR + GEAR_TRANSISSION;
+    int rpm_{T[from_throttle][g][RPM_INDEX]}; // to start calculating gear and speed from the ongoing state 
+    int speed_{T[from_throttle][g][SPEED_INDEX]};
+    bool fb_gear{false};
+    bool fb_speed{false};
+    bool up_down{true};
+    if (from_throttle < to_throttle){
+        up_down = true;
+    } else{up_down = false;}
     for (g_t = 0; g_t < MAX_GEAR + GEAR_TRANSISSION ; g_t++){
-        if (T[to_throttle][g_t][SPEED_INDEX] >= T[from_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX]){
+        if (T[to_throttle][g_t][SPEED_INDEX] >= T[from_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX]){ // to find speed in to_thr match the final speed in from_throttle to jump to proper culumn of to_thr
             break;
-    }}
-            for (g = g_t; g<MAX_GEAR + GEAR_TRANSISSION+1 ; ++g){
-                bool fb_gear = true;
-                bool fb_speed = true;
-                to_spd = T[to_throttle][g][SPEED_INDEX];
-                to_rpm = T[to_throttle][g][RPM_INDEX];
-                gear_ = T[to_throttle][g][0];
-                do{
-                    Delay(COEF);
-                    fb_gear = SmoothFcn(rpm_, from_rpm, to_rpm,RPM_STEP);
-                    fb_speed = SmoothFcn(speed_, from_spd, to_spd,  SPEED_STEP);
-                   //unordered_map<UsageMode, DisplayCanFrame> out_data_map;
-            // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}
-                    out_data_map[UsageMode::kDrive] =       {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_, rpm_, from_ui.turn_indicator, gear_};
-                    out_data_map[UsageMode::kMovable] =     {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
-                    out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
-                    out_data_map[UsageMode::kRevers] =      {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_/REVERES_SPEED_RATIO, rpm_, 0, gear_};
-                    out_data_map[UsageMode::kOff] =         {from_ui.frame_counter, from_ui.ignition, 0                  , 0                          ,0   , 0,  0};
-                    /*                    */
-                    {
-                    std::lock_guard<std::mutex> out_lock(out_data_mutex);
-                    out_data = out_data_map[usage_mode];
-                    }
-                    printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d  UM %d\n",
-                    out_data.rpm, out_data.speed, out_data.automatic_gear,  usage_mode);
-                } while (fb_gear || fb_speed);
-                from_throttle = to_throttle;
-                from_spd = T[to_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX];
-                from_rpm = T[to_throttle][MAX_GEAR + GEAR_TRANSISSION][RPM_INDEX];
-            } //(g = g_t; g<MAX_GEAR + GEAR_TRANSISSION+1 ; g++)
-
-    prev_usage_mode = usage_mode;
+        }}
+    if (from_throttle != to_throttle){
+        from_rpm = T[from_throttle][g][RPM_INDEX];
+        for (g = g_t; g<MAX_GEAR + GEAR_TRANSISSION+1 ; g++){
+            fb_gear = true;
+            fb_speed = true;
+            gear_ = T[to_throttle][g][0];
+            if (from_spd == 0){
+                to_spd = T[to_throttle][0][SPEED_INDEX];
+                to_rpm = T[to_throttle][0][RPM_INDEX];
+            } else {to_rpm = T[to_throttle][g][RPM_INDEX];
+                    to_spd = T[to_throttle][g][SPEED_INDEX];
+            }
+            do{
+                Delay(coef);
+                if (up_down){
+                fb_gear = SpeedRPMCalc(rpm_, from_rpm, to_rpm,GEAR_STEP);
+                fb_speed = SpeedRPMCalc(speed_, from_spd, to_spd,  SPEED_STEP);
+                } else{
+                fb_speed = SpeedRPMCalcDec(speed_, from_spd, to_spd,  SPEED_STEP);
+                fb_gear = SpeedRPMCalcDec(rpm_, from_rpm, to_rpm,GEAR_STEP);
+                }
+                /*                    */
+                {
+                std::lock_guard<std::mutex> out_lock(out_data_mutex);
+                out_data.rpm = rpm_;
+                out_data.speed = speed_;
+                out_data.automatic_gear = gear_;
+                }
+                printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d GG %d  \n", rpm_, speed_, gear_, g);
+        //                server_obj.GetEngineValues(rpm_, speed_, gear_);
+            } while (fb_gear || fb_speed);
+            from_spd = T[to_throttle][g][SPEED_INDEX];
+            from_rpm = T[to_throttle][g][RPM_INDEX];
+            rpm_ = from_rpm;
+            speed_ = from_spd;
+        }
+    }
+    from_throttle = to_throttle;
 }
-/*!
- * \brief SmoothIncrease and SmoothSpeedIncrease make it possible to move smoothly between RPMs and speed
- *
- *
- * \return false if rpm/speed reaches to its to value
- */
-bool Engine::SmoothIncrease(unsigned &val, const unsigned &val_start, const unsigned &val_end, const unsigned step) {
-    int val_out= 0;
+
+bool Engine::SpeedRPMCalc(int &val, const int &val_start, const int &val_end, const int step) {
+ int val_out= 0;
     bool val_feedback{false};
-    val_out = val + step;
-    if ((val_out < val_end) ){
-        val = val_out;
-        val_feedback = true;
-    } else{
-        val = val_end;
-        val_feedback = false;
+    val_out = val_end > val_start ? val + (val_end-val_start)/step: val - /*(val_start-val_end)/*/step;
+    if (val_start < val_end){ //  got to Higher Throttle
+        if ((val_out >= val_end) ){
+            val = val_end;
+            val_feedback = false;
+        } else {
+            val = val_out;
+            val_feedback = true;
+            coef = DELAY_UP;
+        }
+    } else{      
+          val = val_end;
+          val_feedback = false;
     }
     return val_feedback;
 }
 
-/*!
- * \brief SmoothDecrease and SmoothSpeedIncrease make it possible to move smoothly between RPMs and speed
- *
- *
- * \return false if rpm/speed reaches to its to value
- */
-bool Engine::SmoothDecrease(unsigned &val, const unsigned &val_start, const unsigned &val_end, const unsigned step) {
+bool Engine::SpeedRPMCalcDec(int &val, const int &val_start, const int &val_end, const int step) {
     int val_out= 0;
     bool val_feedback{false};
-    val_out = val - step;
-    if ((val_out > val_end) ){
-        val = val_out;
-        val_feedback = true;
-    } else{
-        val = val_end;
-        val_feedback = false;
+    val_out = val_end > val_start ? val + (val_end-val_start)/step: val - /*(val_start-val_end)/*/step;
+    if (val_start > val_end){ //  got to Higher Throttle
+        if ((val_out <= val_end) ){
+            val_feedback = false;
+        } else{ //  go to Lower Throttle
+            if (val_out > val_end) {
+                val = val_out;
+                val_feedback = true;
+                coef = DELAY_DOWN;
+            } else  {
+                val = val_end;
+                val_feedback = false;
+            }
+        }
     }
     return val_feedback;
 }
 
-bool Engine::SameThrottle(unsigned &val, const unsigned &val_start, const unsigned &val_end, const unsigned step) {
-    bool val_feedback{false};
-    COEF = DELAY_UP;
-    return val_feedback;
-}
-
-void Engine::Delay(const clock_t& COEF) {
+void Engine::Delay(const clock_t& coef) {
   clock_t now = clock();
-  while (clock() - now < COEF * CLOCKS_PER_SEC / 10)
-   //while (clock() - now < COEF * CLOCKS_PER_SEC / 10)
-   /// 10 will be removed then COEF will be * 10 and after each itteration COEF will inc/decreas ....
+  while (clock() - now < coef * CLOCKS_PER_SEC / 10)
     ;
 }

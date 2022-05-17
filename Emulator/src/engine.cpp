@@ -98,8 +98,8 @@ void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode&
                     Delay(COEF);
                     fb_gear = SmoothFcn(rpm_, from_rpm, to_rpm,RPM_STEP);
                     fb_speed = SmoothFcn(speed_, from_spd, to_spd,  SPEED_STEP);
-                   //unordered_map<UsageMode, DisplayCanFrame> out_data_map; 
-            // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}         
+                   //unordered_map<UsageMode, DisplayCanFrame> out_data_map;
+            // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}
                     out_data_map[UsageMode::kDrive] =       {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_, rpm_, from_ui.turn_indicator, gear_};
                     out_data_map[UsageMode::kMovable] =     {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
                     out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
@@ -162,7 +162,7 @@ bool Engine::SmoothDecrease(unsigned &val, const unsigned &val_start, const unsi
 
 bool Engine::SameThrottle(unsigned &val, const unsigned &val_start, const unsigned &val_end, const unsigned step) {
     bool val_feedback{false};
-    COEF = DELAY_UP;   
+    COEF = DELAY_UP;
     return val_feedback;
 }
 

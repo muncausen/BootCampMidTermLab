@@ -91,8 +91,7 @@ bool UserInput::Cmd() {
     case key::k_period:
     case key::k_B:
     case key::k_b:
-      this->SetThrottle(Pedal::kZero);  // Abort cruise control!
-      this->SetBrake(Pedal::kOneHundred);
+      this->SetBrake(Pedal::kOneHundred);  // Cruise control aborts in simulation, meaning throttle is ignored.
       break;
 
     case key::k_D:

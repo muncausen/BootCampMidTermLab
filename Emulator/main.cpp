@@ -3,8 +3,8 @@
 #include <thread>
 
 #include "can_tranceiver.hpp"
+#include "engine.hpp"
 #include "io_data.hpp"
-#include"engine.hpp"
 
 Engine engine;
 int main() {
@@ -20,7 +20,6 @@ int main() {
 
     {
       engine.Torquerequest(in_data, out_data);
-      
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
   }

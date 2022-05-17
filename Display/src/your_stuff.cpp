@@ -20,8 +20,29 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
       this->InstrumentCluster.ignite(display_can_frame.ignition);
       this->InstrumentCluster.setRPM(display_can_frame.rpm);
       this->InstrumentCluster.setSpeed(display_can_frame.speed);
-      this->InstrumentCluster.setGearPindle_int(display_can_frame.gear_select);
       this->InstrumentCluster.setGear(display_can_frame.automatic_gear);
+
+      // Because .setGearPindle_int is barbarically implemented we need to do "conversion"
+      switch (display_can_frame.gear_select) {
+        case static_cast<unsigned int>(Gear::kPark):
+          this->InstrumentCluster.setGearPindle_int(0);
+          break;
+
+        case static_cast<unsigned int>(Gear::kReverse):
+          this->InstrumentCluster.setGearPindle_int(2);
+          break;
+
+        case static_cast<unsigned int>(Gear::kNeutral):
+          this->InstrumentCluster.setGearPindle_int(1);
+          break;
+
+        case static_cast<unsigned int>(Gear::kDrive):
+          this->InstrumentCluster.setGearPindle_int(3);
+          break;
+
+        default:
+          break;
+      }
 
       struct _icons icons {};
       switch (display_can_frame.turn_indicator) {

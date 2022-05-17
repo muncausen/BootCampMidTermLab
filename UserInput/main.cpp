@@ -26,5 +26,8 @@ int main() {
 
   ui.StopCanSenderThread();
 
-  return endwin();
+  int rc{};
+  rc &= delwin(stdscr);
+  rc &= endwin();
+  return rc;
 }

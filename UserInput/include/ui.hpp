@@ -1,12 +1,12 @@
+#ifndef SRC_UI_UI_HPP
+#define SRC_UI_UI_HPP
+
 #include <curses.h>
 
 #include <atomic>
 #include <mutex>
 
 #include "candb.hpp"
-
-#ifndef SRC_UI_UI_HPP
-#define SRC_UI_UI_HPP
 
 // Hack to access private members in unit tests
 #ifdef BUILD_TESTS

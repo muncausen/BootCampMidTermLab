@@ -351,7 +351,7 @@ void UserInput::CanSend() {
       std::lock_guard<std::mutex> lk(this->mx);
       this->can_frame_bitfield.frame_counter++;
       write_status =
-          socket_can.write(kUserInputCanFrameId, sizeof(this->can_frame_bitfield), 0, &this->can_frame_bitfield);
+          socket_can.write(kUserInputCanFrameId, sizeof(this->can_frame_bitfield), &this->can_frame_bitfield);
     }  // Realese at end of scope.
 
     if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
@@ -377,7 +377,7 @@ void UserInput::SendShutdown() {
 
   // Sending 10 frames with dummy data with a shutdown ID
   for (size_t i = 0; i < 10; i++) {
-    write_status = socket_can_shutdown.write(kShutdownCanFrameId, sizeof(c), 0, &c);
+    write_status = socket_can_shutdown.write(kShutdownCanFrameId, sizeof(c), &c);
     if (write_status != scpp::STATUS_OK) std::cout << "SocketCAN write error code: " << int32_t(write_status) << "\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }

@@ -43,7 +43,7 @@ void CanTranceiver::CanSend(DisplayCanFrame& out_data, std::mutex& out_data_mute
     {
       std::lock_guard<std::mutex> lock(out_data_mutex);
       out_data.frame_counter++;
-      write_sc_status = socket_can.write(kDisplayCanFrameId, sizeof(out_data), 0, &out_data);
+      write_sc_status = socket_can.write(kDisplayCanFrameId, sizeof(out_data), &out_data);
     }
 
     if (write_sc_status != scpp::STATUS_OK) {

@@ -287,8 +287,7 @@ void UserInput::SetBrake(const Pedal& ped) {
  * \todo Implement this input.
  */
 void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
-  // this->can_frame_bitfield.turn_indicator = static_cast<uint>(ti);
-  // this->turn_indicator = ti;
+  
   switch (ti) {
     case TurnIndicator::kLeft:
       this->turn_indicator = TurnIndicator::kLeft;
@@ -314,19 +313,6 @@ void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
       std::cout << "Wrong Blinker!\n";
       break;
   }
-  // if (ti == TurnIndicator::kLeft) {
-  //   this->turn_indicator = ti;
-  //   std::cout << "Turning Left!\n";
-  // } else if (ti == TurnIndicator::kRight) {
-  //   this->turn_indicator = ti;
-  //   std::cout << "Turning Right!\n";
-  // } else if (ti == TurnIndicator::kHazard) {
-  //   this->turn_indicator = ti;
-  //   std::cout << "Hazard Lights Are ON!\n";
-  // } else if (ti == TurnIndicator::kOff) {
-  //   this->turn_indicator = ti;
-  //   std::cout << "Blinkers Are OFF!\n";
-  // }
 }
 
 /*!

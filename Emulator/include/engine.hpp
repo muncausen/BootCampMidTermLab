@@ -19,27 +19,35 @@ class Engine {
   unsigned gear_{0};
   
   public:
-  UserInputCanFrame from_ui;
 
     enum class UsageMode{
       kOff,       //Ignition == kOff
-      kAvalaible, //Ignition== kOn && Gear == kPark
-      kMovable,   //Ignition == kOn && Gear = kNeutral
+      kAvalaible, //Ignition== kOn && Gear == kPark: rpm constantly 750, speed 0, gear is 0
+      kMovable,   //Ignition == kOn && Gear = kNeutral: rpm follows the throttle, speed is 0, gear is 0
       kDrive,     //Ignition == kOn && Gear == kDrive
       kRevers     // Ignition == kOn && Gear kReverse
     };
     
    
+    UserInputCanFrame from_ui;
     UsageMode usage_mode{UsageMode::kOff};
     UsageMode prev_usage_mode{UsageMode::kOff};
-    unsigned prev_throttle{0};
-    unsigned from_throttle{0};
-    unsigned to_rpm{0};
-    unsigned from_rpm{750};
-    unsigned to_spd{0};
-    unsigned from_spd{0};
-    int cntr{0};
-    int prev_cntr{0};
+    struct EngineTune{
+      unsigned prev_throttle{0};
+      unsigned from_throttle{0};
+      unsigned to_throttle{0};
+      unsigned to_rpm{0};
+      unsigned from_rpm{750};
+      unsigned to_spd{0};
+      unsigned from_spd{0};
+      int cntr{0};
+      int prev_cntr{0};
+    };
+
+    EngineTune engine_tune;
+    unordered_map<UsageMode, DisplayCanFrame> out_data_map;
+    unordered_map<UsageMode, EngineTune> engine_tune_map;
+
     void EngineSimulation(const unsigned&, const UsageMode&, DisplayCanFrame&, clock_t,
                           bool(*SmoothFcn)(unsigned&, const unsigned&, const unsigned&, const unsigned));
     void Delay(const clock_t&);
@@ -48,7 +56,6 @@ class Engine {
     static bool SameThrottle(unsigned&, const unsigned&, const unsigned&, const unsigned);
     UsageMode SetUsageMode(const unsigned&, const unsigned&);
     bool Torquerequest(const UserInputCanFrame&, DisplayCanFrame&);
-    unordered_map<UsageMode, DisplayCanFrame> out_data_map;
     
       unsigned T[11][12][3]{
       /*              0               1               2             3               4               5               6               7               8             9                 10*/
@@ -71,14 +78,14 @@ class Engine {
   const static int SPEED_INDEX= 1;
   const static unsigned SPEED_STEP{1};
   const static unsigned RPM_STEP{45};
-  static clock_t COEF;
-  const static clock_t DELAY_UP = 1;
+  static clock_t DELAY;
+  static clock_t DELAY_UP = 1;
   static clock_t DELAY_DOWN = 2;
   const static uint8_t IGNITION_STATE_KON = 1;
   const static uint8_t IGNITION_STATE_KOFF = 0;
   const static uint8_t GEAR_STATE_KPARK = 0;
-  const static uint8_t GEAR_STATE_KREVERSE = 1;
-  const static uint8_t GEAR_STATE_KNEUTRAL = 2;
+  const static uint8_t  GEAR_STATE_KREVERSE= 1;
+  const static uint8_t  GEAR_STATE_KNEUTRAL= 2;
   const static uint8_t GEAR_STATE_KDRIVE = 3;
   const static int REVERES_SPEED_RATIO = 5;
 #endif  // #ifndef ENGINE_HPP

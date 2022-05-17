@@ -18,26 +18,52 @@ bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& ou
     std::lock_guard<std::mutex> lock(in_data_mutex);
     from_ui = in_data;
     }
+    out_data.frame_counter = from_ui.frame_counter;
+    out_data.gear_select = from_ui.gear_select;
+    out_data.ignition = from_ui.ignition;
+    out_data.turn_indicator = from_ui.turn_indicator;
     if (from_ui.brake)
         {from_ui.throttle = 0;}
     usage_mode = SetUsageMode(from_ui.ignition, from_ui.gear_select);
-    if (from_ui.frame_counter != prev_cntr){
-        if (in_data.throttle > prev_throttle){
+    // if (from_ui.frame_counter != prev_cntr){
+        if (in_data.throttle > engine_tune.prev_throttle){
             EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
-        } else if (in_data.throttle < prev_throttle) {
+        } else if (in_data.throttle < engine_tune.prev_throttle) {
             if (from_ui.brake){DELAY_DOWN = 0.5;}
             else{DELAY_DOWN = 2;}
             EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
-        } else { // Here is where changing UM will be taken care since same throttle but still something changed!
-            if (usage_mode == UsageMode::kAvalaible){
-                from_ui.throttle = 0;
-                EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
+        } else { 
+    // Here is where changing UM will be taken care since same throttle but still something changed!
+            
+            switch (usage_mode) {
+                case UsageMode::kOff:
+                    out_data.gear_select = 0;
+                    out_data.turn_indicator = 0;
+                    out_data.speed = 0;
+                    out_data.rpm = 0;
+                    out_data.automatic_gear = 0;
+                    rpm_ = 0;
+                    speed_= 0;
+                    gear_ = 0;
+                    engine_tune_map[UsageMode::kOff] = {0,0,0,0,0,0,0,0,0};
+                    break;
+                case UsageMode::kAvalaible:
+                    from_ui.throttle = 0;
+                    EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
+                    break;
+                default:
+                    break;
             }
-//            EngineSimulation(from_ui.throttle, usage_mode, out_data, SameThrottle);
+            if (from_ui.brake > 0){
+                engine_tune.from_throttle = 0;
+                engine_tune.from_spd = 0;
+                // DELAY_DOWN = 2;
+                // EngineSimulation(engine_tune.prev_throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
+            }
         }
-        prev_throttle = from_ui.throttle;
-    }
-    prev_cntr = from_ui.frame_counter;
+        engine_tune.prev_throttle = from_ui.throttle;
+    // }
+    // prev_cntr = from_ui.frame_counter;
     return true;
 }
 /*!
@@ -53,7 +79,7 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
         case IGNITION_STATE_KON:
         switch (user_gear){
             case GEAR_STATE_KPARK: // kPark
-                usage_mode = UsageMode::kAvalaible;
+                usage_mode = UsageMode::kAvalaible; 
                 break;
             case GEAR_STATE_KREVERSE: //kReverse,
                 usage_mode = UsageMode::kRevers;
@@ -77,32 +103,32 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
  *
  * \return Calculated values are stored in private members of Engine class.
  */
-void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode& usage_mode, DisplayCanFrame& out_data, clock_t COEF,
+void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode& usage_mode, DisplayCanFrame& out_data, clock_t DELAY,
                                                     bool(*SmoothFcn)(unsigned&, const unsigned&, const unsigned&, const unsigned)) {
 
-    const int to_throttle = (from_ui_throtthe/10); //change % to number(T index)
+    engine_tune.to_throttle = (from_ui_throtthe/10); //change % to number(T index)
     int g = MAX_GEAR + GEAR_TRANSISSION;
     int g_t=0;
 
     for (g_t = 0; g_t < MAX_GEAR + GEAR_TRANSISSION ; g_t++){
-        if (T[to_throttle][g_t][SPEED_INDEX] >= T[from_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX]){
+        if (T[engine_tune.to_throttle][g_t][SPEED_INDEX] >= T[engine_tune.from_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX]){
             break;
     }}
             for (g = g_t; g<MAX_GEAR + GEAR_TRANSISSION+1 ; ++g){
-                bool fb_gear = true;
-                bool fb_speed = true;
-                to_spd = T[to_throttle][g][SPEED_INDEX];
-                to_rpm = T[to_throttle][g][RPM_INDEX];
-                gear_ = T[to_throttle][g][0];
+                bool fb_gear = false;
+                bool fb_speed = false;
+                engine_tune.to_spd = T[engine_tune.to_throttle][g][SPEED_INDEX];
+                engine_tune.to_rpm = T[engine_tune.to_throttle][g][RPM_INDEX];
+                gear_ = T[engine_tune.to_throttle][g][0];
                 do{
-                    Delay(COEF);
-                    fb_gear = SmoothFcn(rpm_, from_rpm, to_rpm,RPM_STEP);
-                    fb_speed = SmoothFcn(speed_, from_spd, to_spd,  SPEED_STEP);
-                   //unordered_map<UsageMode, DisplayCanFrame> out_data_map;
-            // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}
+                    Delay(DELAY);
+                    fb_gear = SmoothFcn(rpm_, engine_tune.from_rpm, engine_tune.to_rpm,RPM_STEP);
+                    fb_speed = SmoothFcn(speed_, engine_tune.from_spd, engine_tune.to_spd,  SPEED_STEP);
+                   //unordered_map<UsageMode, DisplayCanFrame> out_data_map; 
+            // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}         
                     out_data_map[UsageMode::kDrive] =       {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_, rpm_, from_ui.turn_indicator, gear_};
                     out_data_map[UsageMode::kMovable] =     {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
-                    out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
+                    out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      750, from_ui.turn_indicator, 0};
                     out_data_map[UsageMode::kRevers] =      {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_/REVERES_SPEED_RATIO, rpm_, 0, gear_};
                     out_data_map[UsageMode::kOff] =         {from_ui.frame_counter, from_ui.ignition, 0                  , 0                          ,0   , 0,  0};
                     /*                    */
@@ -110,12 +136,12 @@ void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode&
                     std::lock_guard<std::mutex> out_lock(out_data_mutex);
                     out_data = out_data_map[usage_mode];
                     }
-                    printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d  UM %d\n",
-                    out_data.rpm, out_data.speed, out_data.automatic_gear,  usage_mode);
+                    printf("ENGINE:: RPM : %d  Speed %d  GEAR  %d  from ui thr %d\n",
+                    out_data.rpm, out_data.speed, out_data.automatic_gear,  from_ui.throttle);
                 } while (fb_gear || fb_speed);
-                from_throttle = to_throttle;
-                from_spd = T[to_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX];
-                from_rpm = T[to_throttle][MAX_GEAR + GEAR_TRANSISSION][RPM_INDEX];
+                engine_tune.from_throttle = engine_tune.to_throttle;
+                engine_tune.from_spd = T[engine_tune.to_throttle][MAX_GEAR + GEAR_TRANSISSION][SPEED_INDEX];
+                engine_tune.from_rpm = T[engine_tune.to_throttle][MAX_GEAR + GEAR_TRANSISSION][RPM_INDEX];
             } //(g = g_t; g<MAX_GEAR + GEAR_TRANSISSION+1 ; g++)
 
     prev_usage_mode = usage_mode;
@@ -162,14 +188,14 @@ bool Engine::SmoothDecrease(unsigned &val, const unsigned &val_start, const unsi
 
 bool Engine::SameThrottle(unsigned &val, const unsigned &val_start, const unsigned &val_end, const unsigned step) {
     bool val_feedback{false};
-    COEF = DELAY_UP;
+    DELAY = DELAY_UP;   
     return val_feedback;
 }
 
-void Engine::Delay(const clock_t& COEF) {
+void Engine::Delay(const clock_t& DELAY) {
   clock_t now = clock();
-  while (clock() - now < COEF * CLOCKS_PER_SEC / 10)
-   //while (clock() - now < COEF * CLOCKS_PER_SEC / 10)
-   /// 10 will be removed then COEF will be * 10 and after each itteration COEF will inc/decreas ....
+  while (clock() - now < DELAY * CLOCKS_PER_SEC / 10)
+   //while (clock() - now < DELAY * CLOCKS_PER_SEC / 10)
+   /// 10 will be removed then DELAY will be * 10 and after each itteration DELAY will inc/decreas ....
     ;
 }

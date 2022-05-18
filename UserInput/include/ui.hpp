@@ -81,6 +81,7 @@ class UserInput {
   void SetSeatbelts();
   void SetDoors();
   void SetHighBeam();
+  void SetHandbrake(const Handbrake&);
   void StartCanSenderThread();
   void StopCanSenderThread();
   void SendShutdown();
@@ -95,6 +96,7 @@ class UserInput {
   HighBeam high_beam{};
   SeatBealt seatbealt{};
   Doors doors{};
+  Handbrake handbrake{};
   std::atomic<bool> can_sender_run{};
   std::mutex mx{};
 

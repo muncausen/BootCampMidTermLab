@@ -85,6 +85,7 @@ bool UserInput::Cmd() {
       break;
 
     case key::k_comma:
+      this->SetHandbrake(Handbrake::kOff);
       this->SetBrake(Pedal::kZero);
       break;
 
@@ -93,6 +94,7 @@ bool UserInput::Cmd() {
     case key::k_b:
       this->SetThrottle(Pedal::kZero);  // Abort cruise control.
       this->SetBrake(Pedal::kOneHundred);
+      this->SetHandbrake(Handbrake::kOn);
       break;
 
     case key::k_D:
@@ -184,6 +186,7 @@ void UserInput::UpdateCanFrameBitfield() {
   this->can_frame_bitfield.high_beam = static_cast<uint>(this->high_beam);
   this->can_frame_bitfield.seatbelt = static_cast<uint>(this->seatbealt);
   this->can_frame_bitfield.doors = static_cast<uint>(this->doors);
+  this->can_frame_bitfield.handbrake = static_cast<uint>(this->handbrake);
 }
 
 /*!
@@ -391,6 +394,27 @@ void UserInput::SetDoors() {
     case Doors::kOpen:
       this->doors = Doors::kClose;
       std::cout << "Doors Closed!. \n\r";
+      break;
+
+    default:
+      break;
+  }
+}
+/*!
+ * \brief Set state of handbrake.
+ *
+ * \param hb Handbrake value based on user input.
+ */
+void UserInput::SetHandbrake(const Handbrake& hb) {
+  switch (hb) {
+    case Handbrake::kOn:
+      this->handbrake = Handbrake::kOn;
+      std::cout << "TOKYO DRIFT LET'S GO! \n\r";
+      break;
+
+    case Handbrake::kOff:
+      this->handbrake = Handbrake::kOff;
+      std::cout << "Handbrake released. \n\r";
       break;
 
     default:

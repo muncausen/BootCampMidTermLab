@@ -17,6 +17,7 @@ struct UserInputCanFrame {
   unsigned high_beam : 2;       //!< High beams state, 2 bit.
   unsigned seatbelt : 2;        //!< Seatbelts state, 2 bit.
   unsigned doors : 2;           //!< Doors state, 2 bit.
+  unsigned handbrake : 2;       //!< Handbrake state, 2 bit.
 };
 
 /*!
@@ -35,6 +36,7 @@ struct DisplayCanFrame {
   unsigned high_beam : 2;       //!< High beams state, 2 bit.
   unsigned seatbelt : 2;        //!< Seatbelts state, 2 bit.
   unsigned doors :2;            //!< Doors state, 2 bit.
+  unsigned handbrake : 2;       //!< Handbrake state, 2 bit.
 };
 
 /*!
@@ -122,5 +124,15 @@ enum class Doors {
   kClose = 0,
   kOpen,
 };
+
+/*!
+ * \brief Enum representation of hanbrake state.
+ *
+ */
+enum class Handbrake {
+  kOff = 0,
+  kOn,
+};
+
 
 #endif  // CANDB_HPP_

@@ -126,6 +126,19 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
           break;
       }
 
+      switch (display_can_frame.handbrake) {
+        case static_cast<unsigned int>(Handbrake::kOff):
+          icons.hand_break = 0;
+          break;
+
+        case static_cast<unsigned int>(Handbrake::kOn):
+          icons.hand_break = 1;
+          break;
+
+        default:
+          break;
+      }
+
       this->InstrumentCluster.setIcon(&icons);
 
     } break;

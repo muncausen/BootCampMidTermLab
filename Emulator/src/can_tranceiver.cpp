@@ -6,6 +6,10 @@
 #include <mutex>
 #include <thread>
 
+/*!
+ * \brief Listens for CAN frame updates local shared data accordingly. Intended to run in own thread.
+ *
+ */
 void CanTranceiver::CanReceive(UserInputCanFrame& in_data, std::mutex& in_data_mutex, std::atomic<bool>& run) {
   scpp::SocketCan socket_can;
   scpp::CanFrame in_frame;
@@ -28,6 +32,10 @@ void CanTranceiver::CanReceive(UserInputCanFrame& in_data, std::mutex& in_data_m
   }
 };
 
+/*!
+ * \brief Populates a CAN frame and sends it on the CAN bus. Intended to run in own thread.
+ *
+ */
 void CanTranceiver::CanSend(DisplayCanFrame& out_data, std::mutex& out_data_mutex, std::atomic<bool>& run) {
   scpp::SocketCan socket_can;
 

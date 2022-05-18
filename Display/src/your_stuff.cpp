@@ -22,6 +22,23 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
       this->InstrumentCluster.setSpeed(display_can_frame.speed);
       this->InstrumentCluster.setGear(display_can_frame.automatic_gear);
 
+      switch (display_can_frame.ignition) {
+        case static_cast<unsigned int>(Ignition::kOn):
+          this->InstrumentCluster.setFuelGauges(240);
+          this->InstrumentCluster.setTemperatureGauges(155);
+          this->InstrumentCluster.setOilTemperatureGauges(155);
+          break;
+
+        case static_cast<unsigned int>(Ignition::kOff):
+          this->InstrumentCluster.setFuelGauges(0);
+          this->InstrumentCluster.setTemperatureGauges(0);
+          this->InstrumentCluster.setOilTemperatureGauges(0);
+          break;
+
+        default:
+          break;
+      }
+
       // Because .setGearPindle_int is barbarically implemented we need to do "conversion"
       switch (display_can_frame.gear_select) {
         case static_cast<unsigned int>(Gear::kPark):

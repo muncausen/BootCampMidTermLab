@@ -91,7 +91,8 @@ bool UserInput::Cmd() {
     case key::k_period:
     case key::k_B:
     case key::k_b:
-      this->SetBrake(Pedal::kOneHundred);  // Cruise control aborts in simulation, meaning throttle is ignored.
+      this->SetThrottle(Pedal::kZero);  // Abort cruise control.
+      this->SetBrake(Pedal::kOneHundred);
       break;
 
     case key::k_D:
@@ -179,6 +180,7 @@ void UserInput::SetIgnition() {
       break;
 
     case Ignition::kOn:
+      this->SetThrottle(Pedal::kZero);  // Abort cruise control.
       this->ignition = Ignition::kOff;
       std::cout << "Ignition off.\n";
       break;
@@ -287,7 +289,7 @@ void UserInput::SetBrake(const Pedal& ped) {
  * \todo Implement this input.
  */
 void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
-  
+
   switch (ti) {
     case TurnIndicator::kLeft:
       this->turn_indicator = TurnIndicator::kLeft;

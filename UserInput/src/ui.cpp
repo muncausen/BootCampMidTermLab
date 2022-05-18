@@ -34,7 +34,7 @@ bool UserInput::Cmd() {
   switch (this->ch) {
     case key::k_Q:
     case key::k_q:
-      std::cout << "Exiting\n";
+      std::cout << "Exiting \n\r";
       this->SendShutdown();
       run = false;
       break;
@@ -149,7 +149,7 @@ bool UserInput::Cmd() {
       break;
 
     default:
-      std::cout << "Unknown command!\n";
+      std::cout << "Unknown command! \n\r";
       break;
   }
 
@@ -176,17 +176,18 @@ void UserInput::SetIgnition() {
   switch (this->ignition) {
     case Ignition::kOff:
       this->ignition = Ignition::kOn;
-      std::cout << "Ignition on.\n";
+      std::cout << "Ignition on. \n\r";
       break;
 
     case Ignition::kOn:
       this->SetThrottle(Pedal::kZero);  // Abort cruise control.
+      this->SetGear(Gear::kPark);
       this->ignition = Ignition::kOff;
-      std::cout << "Ignition off.\n";
+      std::cout << "Ignition off. \n\r";
       break;
 
     default:
-      std::cout << "Ignition error! Unknown ignition state.\n";
+      std::cout << "Ignition error! Unknown ignition state. \n\r";
       break;
   }
 }
@@ -202,36 +203,36 @@ void UserInput::SetGear(const Gear& gr) {
   switch (gr) {
     case Gear::kPark:
       this->gear_selection = Gear::kPark;
-      std::cout << "Gear lever in Park.\n";
+      std::cout << "Gear lever in Park. \n\r";
       break;
 
     case Gear::kReverse:
       this->gear_selection = Gear::kReverse;
-      std::cout << "Gear lever in Reverse.\n";
+      std::cout << "Gear lever in Reverse. \n\r";
       break;
 
     case Gear::kNeutral:
       this->gear_selection = Gear::kNeutral;
-      std::cout << "Gear lever in Neutral.\n";
+      std::cout << "Gear lever in Neutral. \n\r";
       break;
 
     case Gear::kDrive:
       this->gear_selection = Gear::kDrive;
-      std::cout << "Gear lever in Drive.\n";
+      std::cout << "Gear lever in Drive. \n\r";
       break;
 
     case Gear::kNext:
       if (Gear::kPark == this->gear_selection) {
         this->gear_selection = Gear::kReverse;
-        std::cout << "Gear lever in Reverse.\n";
+        std::cout << "Gear lever in Reverse. \n\r";
       } else if (Gear::kReverse == this->gear_selection) {
         this->gear_selection = Gear::kNeutral;
-        std::cout << "Gear lever in Neutral.\n";
+        std::cout << "Gear lever in Neutral. \n\r";
       } else if (Gear::kNeutral == this->gear_selection) {
         this->gear_selection = Gear::kDrive;
-        std::cout << "Gear lever in Drive.\n";
+        std::cout << "Gear lever in Drive. \n\r";
       } else {
-        std::cout << "Gear lever no change.\n";
+        std::cout << "Gear lever no change. \n\r";
         break;
       }
       break;
@@ -239,21 +240,21 @@ void UserInput::SetGear(const Gear& gr) {
     case Gear::kPrevious:
       if (Gear::kDrive == this->gear_selection) {
         this->gear_selection = Gear::kNeutral;
-        std::cout << "Gear lever in Neutral.\n";
+        std::cout << "Gear lever in Neutral. \n\r";
       } else if (Gear::kNeutral == this->gear_selection) {
         this->gear_selection = Gear::kReverse;
-        std::cout << "Gear lever in Reverse.\n";
+        std::cout << "Gear lever in Reverse. \n\r";
       } else if (Gear::kReverse == this->gear_selection) {
         this->gear_selection = Gear::kPark;
-        std::cout << "Gear lever in Park.\n";
+        std::cout << "Gear lever in Park. \n\r";
       } else {
-        std::cout << "Gear lever no change.\n";
+        std::cout << "Gear lever no change. \n\r";
         break;
       }
       break;
 
     default:
-      std::cout << "Gear error! Really weird gear request. This should not be possible.\n";
+      std::cout << "Gear error! Really weird gear request. This should not be possible. \n\r";
       break;
   }
 }
@@ -266,7 +267,7 @@ void UserInput::SetGear(const Gear& gr) {
 void UserInput::SetThrottle(const Pedal& ped) {
   if (Pedal::kZero <= ped && ped <= Pedal::kOneHundred) {
     this->throttle = ped;
-    std::cout << "Throttle: " << static_cast<int>(this->throttle) << " %\n";
+    std::cout << "Throttle: " << static_cast<int>(this->throttle) << " % \n\r";
   }
 }
 
@@ -278,7 +279,7 @@ void UserInput::SetThrottle(const Pedal& ped) {
 void UserInput::SetBrake(const Pedal& ped) {
   if (Pedal::kZero <= ped && ped <= Pedal::kOneHundred) {
     this->brake = ped;
-    std::cout << "Brake: " << static_cast<int>(this->brake) << " %\n";
+    std::cout << "Brake: " << static_cast<int>(this->brake) << " % \n\r";
   }
 }
 
@@ -293,26 +294,26 @@ void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
   switch (ti) {
     case TurnIndicator::kLeft:
       this->turn_indicator = TurnIndicator::kLeft;
-      std::cout << "Turning Left!\n";
+      std::cout << "Turning Left! \n\r";
       break;
 
     case TurnIndicator::kRight:
       this->turn_indicator = TurnIndicator::kRight;
-      std::cout << "Turning Right!\n";
+      std::cout << "Turning Right! \n\r";
       break;
 
     case TurnIndicator::kHazard:
       this->turn_indicator = TurnIndicator::kHazard;
-      std::cout << "Hazard Lights Are ON!\n";
+      std::cout << "Hazard Lights Are ON! \n\r";
       break;
 
     case TurnIndicator::kOff:
       this->turn_indicator = TurnIndicator::kOff;
-      std::cout << "Blinkers Are OFF!\n";
+      std::cout << "Blinkers Are OFF! \n\r";
       break;
 
     default:
-      std::cout << "Wrong Blinker!\n";
+      std::cout << "Wrong Blinker! \n\r";
       break;
   }
 }

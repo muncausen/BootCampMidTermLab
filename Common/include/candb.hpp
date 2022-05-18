@@ -28,6 +28,7 @@ struct DisplayCanFrame {
   unsigned rpm : 13;            //!< Engine RPM, 13 bit.
   unsigned turn_indicator : 2;  //!< Turn indicator incl. warning, 2 bit.
   unsigned automatic_gear : 3;  //!< Current gear engaged, 3 bit.
+  unsigned brake : 1;           //!< Brake request, 8 bit.
 };
 
 /*!

@@ -12,6 +12,24 @@
 
 
 using namespace std;
+const static unsigned MINMUM_RPM = 750;
+const static int MAX_GEAR = 6;
+const static int GEAR_TRANSISSION = 4;
+const static int RPM_INDEX= 2;
+const static int SPEED_INDEX= 1;
+const static unsigned SPEED_STEP{1};
+const static unsigned RPM_STEP{45};
+static clock_t DELAY;
+static clock_t DELAY_UP = 5;
+static clock_t DELAY_DOWN = 2;
+const static unsigned IGNITION_STATE_KON = 1;
+const static unsigned IGNITION_STATE_KOFF = 0;
+const static unsigned GEAR_STATE_KPARK = 0;
+const static unsigned  GEAR_STATE_KREVERSE= 1;
+const static unsigned  GEAR_STATE_KNEUTRAL= 2;
+const static unsigned GEAR_STATE_KDRIVE = 3;
+const static unsigned REVERES_SPEED_RATIO = 5;
+
 class Engine {
   private:
   unsigned rpm_{0};
@@ -30,6 +48,7 @@ class Engine {
     
    
     UserInputCanFrame from_ui;
+    UserInputCanFrame data_from_ui;
     UsageMode usage_mode{UsageMode::kOff};
     UsageMode prev_usage_mode{UsageMode::kOff};
     struct EngineTune{
@@ -37,7 +56,7 @@ class Engine {
       unsigned from_throttle{0};
       unsigned to_throttle{0};
       unsigned to_rpm{0};
-      unsigned from_rpm{750};
+      unsigned from_rpm{MINMUM_RPM};
       unsigned to_spd{0};
       unsigned from_spd{0};
       int cntr{0};
@@ -72,20 +91,5 @@ class Engine {
       /*th100%*/ {{1, 63, 5000}, {1, 63, 3800}, {2, 91, 5000}, {2, 91, 3800}, {3, 131, 5000}, {3, 131, 3800}, {4, 187, 5000}, {4, 187, 3800}, {5, 223, 5000}, {5, 223, 3800}, {6, 335, 5000}}};//NO_LINT
       }; // class ENGINE END 
 
-  const static int MAX_GEAR = 6;
-  const static int GEAR_TRANSISSION = 4;
-  const static int RPM_INDEX= 2;
-  const static int SPEED_INDEX= 1;
-  const static unsigned SPEED_STEP{1};
-  const static unsigned RPM_STEP{45};
-  static clock_t DELAY;
-  static clock_t DELAY_UP = 1;
-  static clock_t DELAY_DOWN = 2;
-  const static uint8_t IGNITION_STATE_KON = 1;
-  const static uint8_t IGNITION_STATE_KOFF = 0;
-  const static uint8_t GEAR_STATE_KPARK = 0;
-  const static uint8_t  GEAR_STATE_KREVERSE= 1;
-  const static uint8_t  GEAR_STATE_KNEUTRAL= 2;
-  const static uint8_t GEAR_STATE_KDRIVE = 3;
-  const static int REVERES_SPEED_RATIO = 5;
+
 #endif  // #ifndef ENGINE_HPP

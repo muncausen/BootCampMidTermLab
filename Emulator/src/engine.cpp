@@ -16,54 +16,54 @@ but it waits for new throttle!!
 bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& out_data){
     {
     std::lock_guard<std::mutex> lock(in_data_mutex);
-    from_ui = in_data;
+    data_from_ui = in_data;
+    }
+    from_ui = data_from_ui;
+    if (from_ui.brake)
+        {from_ui.throttle = 0;}
+    usage_mode = SetUsageMode(from_ui.ignition, from_ui.gear_select);
+    if (from_ui.throttle > engine_tune.prev_throttle){
+        EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
+    } else if (from_ui.throttle < engine_tune.prev_throttle) {
+        // if (from_ui.brake){DELAY_DOWN = 0.5;}
+        // else{DELAY_DOWN = 2;}
+        EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
+    } else { 
+// Here is where changing UM will be taken care since same throttle but still something changed!
+        switch (usage_mode) {
+            case UsageMode::kOff:
+                out_data.gear_select = 0;
+                out_data.turn_indicator = 0;
+                out_data.speed = 0;
+                out_data.rpm = 0;
+                out_data.automatic_gear = 0;
+                rpm_ = 0;
+                speed_= 0;
+                gear_ = 0;
+                engine_tune = {0,0,0,0,MINMUM_RPM,0,0,0,0};
+                from_ui = {};
+                break;
+            case UsageMode::kAvalaible:
+                out_data = {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0, MINMUM_RPM, from_ui.turn_indicator, 0};
+                engine_tune = {0,0,0,0,MINMUM_RPM,0,0,0,0};
+                break;
+            default:
+                break;
+        }
+        if (from_ui.brake > 0){
+            engine_tune.from_throttle = 0;
+            engine_tune.from_spd = 0;
+            // DELAY_DOWN = 2;
+            // EngineSimulation(engine_tune.prev_throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
+        }
     }
     out_data.frame_counter = from_ui.frame_counter;
     out_data.gear_select = from_ui.gear_select;
     out_data.ignition = from_ui.ignition;
     out_data.turn_indicator = from_ui.turn_indicator;
-    if (from_ui.brake)
-        {from_ui.throttle = 0;}
-    usage_mode = SetUsageMode(from_ui.ignition, from_ui.gear_select);
-    // if (from_ui.frame_counter != prev_cntr){
-        if (in_data.throttle > engine_tune.prev_throttle){
-            EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
-        } else if (in_data.throttle < engine_tune.prev_throttle) {
-            if (from_ui.brake){DELAY_DOWN = 0.5;}
-            else{DELAY_DOWN = 2;}
-            EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
-        } else { 
-    // Here is where changing UM will be taken care since same throttle but still something changed!
-            
-            switch (usage_mode) {
-                case UsageMode::kOff:
-                    out_data.gear_select = 0;
-                    out_data.turn_indicator = 0;
-                    out_data.speed = 0;
-                    out_data.rpm = 0;
-                    out_data.automatic_gear = 0;
-                    rpm_ = 0;
-                    speed_= 0;
-                    gear_ = 0;
-                    engine_tune_map[UsageMode::kOff] = {0,0,0,0,0,0,0,0,0};
-                    break;
-                case UsageMode::kAvalaible:
-                    from_ui.throttle = 0;
-                    EngineSimulation(from_ui.throttle, usage_mode, out_data, DELAY_UP, SmoothIncrease);
-                    break;
-                default:
-                    break;
-            }
-            if (from_ui.brake > 0){
-                engine_tune.from_throttle = 0;
-                engine_tune.from_spd = 0;
-                // DELAY_DOWN = 2;
-                // EngineSimulation(engine_tune.prev_throttle, usage_mode, out_data, DELAY_DOWN, SmoothDecrease);
-            }
-        }
-        engine_tune.prev_throttle = from_ui.throttle;
-    // }
-    // prev_cntr = from_ui.frame_counter;
+    out_data.brake = from_ui.brake;
+    engine_tune.prev_throttle = from_ui.throttle;
+
     return true;
 }
 /*!
@@ -80,6 +80,8 @@ Engine::UsageMode Engine::SetUsageMode(const unsigned& ignition, const unsigned&
         switch (user_gear){
             case GEAR_STATE_KPARK: // kPark
                 usage_mode = UsageMode::kAvalaible; 
+                from_ui.throttle = 0;
+                engine_tune.prev_throttle = 0;
                 break;
             case GEAR_STATE_KREVERSE: //kReverse,
                 usage_mode = UsageMode::kRevers;
@@ -128,7 +130,7 @@ void Engine::EngineSimulation(const unsigned& from_ui_throtthe, const UsageMode&
             // out_data_map: {frame_counter, ignition, gear_select, speed, rpm, TI, automatic_gear}         
                     out_data_map[UsageMode::kDrive] =       {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_, rpm_, from_ui.turn_indicator, gear_};
                     out_data_map[UsageMode::kMovable] =     {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      rpm_, from_ui.turn_indicator, 0};
-                    out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0,      750, from_ui.turn_indicator, 0};
+                    out_data_map[UsageMode::kAvalaible] =   {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, 0, MINMUM_RPM, from_ui.turn_indicator, 0};
                     out_data_map[UsageMode::kRevers] =      {from_ui.frame_counter, from_ui.ignition, from_ui.gear_select, speed_/REVERES_SPEED_RATIO, rpm_, 0, gear_};
                     out_data_map[UsageMode::kOff] =         {from_ui.frame_counter, from_ui.ignition, 0                  , 0                          ,0   , 0,  0};
                     /*                    */
@@ -194,7 +196,7 @@ bool Engine::SameThrottle(unsigned &val, const unsigned &val_start, const unsign
 
 void Engine::Delay(const clock_t& DELAY) {
   clock_t now = clock();
-  while (clock() - now < DELAY * CLOCKS_PER_SEC / 10)
+  while (clock() - now < DELAY * CLOCKS_PER_SEC / 100)
    //while (clock() - now < DELAY * CLOCKS_PER_SEC / 10)
    /// 10 will be removed then DELAY will be * 10 and after each itteration DELAY will inc/decreas ....
     ;

@@ -21,6 +21,10 @@ p | Park
 r | Reverse
 n | Neutral
 d | Drive
+j | Left Blinker
+l | Right Blinker
+k | Hazard ON
+i | Blinkers OFF
 q | Quit
 
 ### Quitting

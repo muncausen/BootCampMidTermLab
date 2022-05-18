@@ -86,6 +86,46 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame *const _frame) {
         default:
           break;
       }
+
+      switch (display_can_frame.seatbelt) {
+        case static_cast<unsigned int>(SeatBealt::kUnfasten):
+          icons.seat_belt = 1;
+          break;
+
+        case static_cast<unsigned int>(SeatBealt::kFasten):
+          icons.seat_belt = 0;
+          break;
+
+        default:
+          break;
+      }
+
+      switch (display_can_frame.doors) {
+        case static_cast<unsigned int>(Doors::kOpen):
+          icons.doors_open = 1;
+          break;
+
+        case static_cast<unsigned int>(Doors::kClose):
+          icons.doors_open = 0;
+          break;
+
+        default:
+          break;
+      }
+
+      switch (display_can_frame.high_beam) {
+        case static_cast<unsigned int>(HighBeam::kOn):
+          icons.high_beam = 1;
+          break;
+
+        case static_cast<unsigned int>(HighBeam::kOff):
+          icons.high_beam = 0;
+          break;
+
+        default:
+          break;
+      }
+
       this->InstrumentCluster.setIcon(&icons);
 
     } break;

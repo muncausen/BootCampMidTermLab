@@ -41,6 +41,9 @@ const int k_P = 80;
 const int k_Q = 81;
 const int k_R = 82;
 const int k_S = 83;
+const int k_T = 84;
+const int k_U = 85;
+const int k_Y = 89;
 const int k_b = 98;
 const int k_d = 100;
 const int k_f = 102;
@@ -53,6 +56,10 @@ const int k_p = 112;
 const int k_q = 113;
 const int k_r = 114;
 const int k_s = 115;
+const int k_t = 116;
+const int k_u = 117;
+const int k_y = 121;
+
 }  // namespace key
 
 /*!
@@ -71,6 +78,9 @@ class UserInput {
   void SetThrottle(const Pedal&);
   void SetBrake(const Pedal&);
   void SetTurnIndicator(const TurnIndicator&);
+  void SetSeatbelts();
+  void SetDoors();
+  void SetHighBeam();
   void StartCanSenderThread();
   void StopCanSenderThread();
   void SendShutdown();
@@ -82,6 +92,9 @@ class UserInput {
   Pedal throttle{};
   Pedal brake{};
   TurnIndicator turn_indicator{};
+  HighBeam high_beam{};
+  SeatBealt seatbealt{};
+  Doors doors{};
   std::atomic<bool> can_sender_run{};
   std::mutex mx{};
 

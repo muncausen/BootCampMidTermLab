@@ -14,6 +14,9 @@ struct UserInputCanFrame {
   unsigned throttle : 8;        //!< Throttle request, 8 bit.
   unsigned brake : 8;           //!< Brake request, 8 bit.
   unsigned turn_indicator : 2;  //!< Turn indicator incl. warning, 2 bit.
+  unsigned high_beam : 2;       //!< High beams state, 2 bit.
+  unsigned seatbelt : 2;        //!< Seatbelts state, 2 bit.
+  unsigned doors : 2;           //!< Doors state, 2 bit.
 };
 
 /*!
@@ -29,6 +32,9 @@ struct DisplayCanFrame {
   unsigned turn_indicator : 2;  //!< Turn indicator incl. warning, 2 bit.
   unsigned automatic_gear : 3;  //!< Current gear engaged, 3 bit.
   unsigned brake : 1;           //!< Brake request, 8 bit.
+  unsigned high_beam : 2;       //!< High beams state, 2 bit.
+  unsigned seatbelt : 2;        //!< Seatbelts state, 2 bit.
+  unsigned doors :2;            //!< Doors state, 2 bit.
 };
 
 /*!
@@ -88,6 +94,33 @@ enum class TurnIndicator {
   kRight,
   kLeft,
   kHazard,
+};
+
+/*!
+ * \brief Enum representation of high beams state.
+ *
+ */
+enum class HighBeam {
+  kOff = 0,
+  kOn,
+};
+
+/*!
+ * \brief Enum representation of seatbelts state.
+ *
+ */
+enum class SeatBealt {
+  kFasten = 0,
+  kUnfasten,
+};
+
+/*!
+ * \brief Enum representation of doors state.
+ *
+ */
+enum class Doors {
+  kClose = 0,
+  kOpen,
 };
 
 #endif  // CANDB_HPP_

@@ -25,6 +25,9 @@ j | Left Blinker
 l | Right Blinker
 k | Hazard ON
 i | Blinkers OFF
+t | Seatbelt 
+y | Doors
+u | Highbeams
 q | Quit
 
 ### Quitting

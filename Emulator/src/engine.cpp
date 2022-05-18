@@ -62,6 +62,9 @@ bool Engine::Torquerequest(const UserInputCanFrame& in_data, DisplayCanFrame& ou
     out_data.ignition = from_ui.ignition;
     out_data.turn_indicator = from_ui.turn_indicator;
     out_data.brake = from_ui.brake;
+    out_data.doors = from_ui.doors;
+    out_data.seatbelt = from_ui.seatbelt;
+    out_data.high_beam = from_ui.high_beam;
     engine_tune.prev_throttle = from_ui.throttle;
 
     return true;

@@ -148,6 +148,21 @@ bool UserInput::Cmd() {
       this->SetTurnIndicator(TurnIndicator::kOff);
       break;
 
+    case key::k_t:
+    case key::k_T:
+      this->SetSeatbelts();
+      break;
+
+    case key::k_y:
+    case key::k_Y:
+      this->SetDoors();
+      break;
+
+    case key::k_u:
+    case key::k_U:
+      this->SetHighBeam();
+      break;
+
     default:
       std::cout << "Unknown command! \n\r";
       break;
@@ -166,6 +181,9 @@ void UserInput::UpdateCanFrameBitfield() {
   this->can_frame_bitfield.throttle = static_cast<uint>(this->throttle);
   this->can_frame_bitfield.brake = static_cast<uint>(this->brake);
   this->can_frame_bitfield.turn_indicator = static_cast<uint>(this->turn_indicator);
+  this->can_frame_bitfield.high_beam = static_cast<uint>(this->high_beam);
+  this->can_frame_bitfield.seatbelt = static_cast<uint>(this->seatbealt);
+  this->can_frame_bitfield.doors = static_cast<uint>(this->doors);
 }
 
 /*!
@@ -290,7 +308,6 @@ void UserInput::SetBrake(const Pedal& ped) {
  * \todo Implement this input.
  */
 void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
-
   switch (ti) {
     case TurnIndicator::kLeft:
       this->turn_indicator = TurnIndicator::kLeft;
@@ -314,6 +331,69 @@ void UserInput::SetTurnIndicator(const TurnIndicator& ti) {
 
     default:
       std::cout << "Wrong Blinker! \n\r";
+      break;
+  }
+}
+
+/*!
+ * \brief Sets the value of high beams state.
+ *
+ */
+void UserInput::SetHighBeam() {
+  switch (this->high_beam) {
+    case HighBeam::kOn:
+      this->high_beam = HighBeam::kOff;
+      std::cout << "High Beams off. \n\r";
+      break;
+
+    case HighBeam::kOff:
+      this->high_beam = HighBeam::kOn;
+      std::cout << "High Beams on. \n\r";
+      break;
+
+    default:
+      break;
+  }
+}
+
+/*!
+ * \brief Sets the value of seat belts state.
+ *
+ */
+void UserInput::SetSeatbelts() {
+  switch (this->seatbealt) {
+    case SeatBealt::kFasten:
+      this->seatbealt = SeatBealt::kUnfasten;
+      std::cout << "Fasten Your Seat Belt! \n\r";
+      break;
+
+    case SeatBealt::kUnfasten:
+      this->seatbealt = SeatBealt::kFasten;
+      std::cout << "Seat Belts Fastened. \n\r";
+      break;
+
+    default:
+      break;
+  }
+}
+
+/*!
+ * \brief Sets the value of doors state.
+ *
+ */
+void UserInput::SetDoors() {
+  switch (this->doors) {
+    case Doors::kClose:
+      this->doors = Doors::kOpen;
+      std::cout << "Doors Open! \n\r";
+      break;
+
+    case Doors::kOpen:
+      this->doors = Doors::kClose;
+      std::cout << "Doors Closed!. \n\r";
+      break;
+
+    default:
       break;
   }
 }

@@ -1,0 +1,6 @@
+<map id="TestEmulator" name="TestEmulator">
+<area shape="rect" id="node3" href="$classEngine.html" title="Engine" alt="" coords="158,109,221,136"/>
+<area shape="rect" id="node4" href="$structEngine_1_1EngineTune.html" title="Engine::EngineTune" alt="" coords="5,5,144,32"/>
+<area shape="rect" id="node5" href="$structUserInputCanFrame.html" title="CAN frame structure from user input to emulator module. " alt="" coords="189,5,329,32"/>
+<area shape="rect" id="node6" href="$classCanTranceiver.html" title="CanTranceiver" alt="" coords="345,109,452,136"/>
+</map>

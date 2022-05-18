@@ -9,12 +9,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-/* CAN DLC to real data length conversion helpers */
+/*!
+ * \brief CAN DLC to real data length conversion array.
+ */
 static const unsigned char dlc2len[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 20, 24, 32, 48, 64};
 
-/* get data length from can_dlc with sanitized can_dlc */
-unsigned char can_dlc2len(unsigned char can_dlc) { return dlc2len[can_dlc & 0x0F]; }
-
+/*!
+ * \brief Real data to CAN DLC length conversion array.
+ */
 static const unsigned char len2dlc[] = {0,  1,  2,  3,  4,  5,  6,  7,  8, /* 0 - 8 */
                                         9,  9,  9,  9,                     /* 9 - 12 */
                                         10, 10, 10, 10,                    /* 13 - 16 */
@@ -26,7 +28,14 @@ static const unsigned char len2dlc[] = {0,  1,  2,  3,  4,  5,  6,  7,  8, /* 0 
                                         15, 15, 15, 15, 15, 15, 15, 15,    /* 49 - 56 */
                                         15, 15, 15, 15, 15, 15, 15, 15};   /* 57 - 64 */
 
-/* map the sanitized data length to an appropriate data length code */
+/*!
+ * \brief Get data length from can_dlc with sanitized can_dlc.
+ */
+unsigned char can_dlc2len(unsigned char can_dlc) { return dlc2len[can_dlc & 0x0F]; }
+
+/*!
+ * \brief Map the sanitized data length to an appropriate data length code.
+ */
 unsigned char can_len2dlc(unsigned char len) {
   if (len > 64) return 0xF;
 
@@ -35,7 +44,20 @@ unsigned char can_len2dlc(unsigned char len) {
 
 namespace scpp {
 
+/*!
+ * \brief Construct a new Socket Can:: Socket Can object
+ *
+ */
 SocketCan::SocketCan() {}
+
+/*!
+ * \brief Open CAN socket
+ *
+ * \param can_interface Name of CAN interface
+ * \param read_timeout_ms Timeout in milliseconds
+ * \param mode Classic CAN or CAN FD
+ * \return SocketCanStatus
+ */
 SocketCanStatus SocketCan::open(const std::string &can_interface, int32_t read_timeout_ms, SocketMode mode) {
   m_interface = can_interface;
   m_socket_mode = mode;
@@ -95,6 +117,12 @@ SocketCanStatus SocketCan::open(const std::string &can_interface, int32_t read_t
   return STATUS_OK;
 }
 
+/*!
+ * \brief Write to CAN socket
+ *
+ * \param msg Reference to message to be written
+ * \return SocketCanStatus
+ */
 SocketCanStatus SocketCan::write(const CanFrame &msg) {
   struct canfd_frame frame;
   memset(&frame, 0, sizeof(frame)); /* init CAN FD frame, e.g. LEN = 0 */
@@ -117,6 +145,15 @@ SocketCanStatus SocketCan::write(const CanFrame &msg) {
   return STATUS_OK;
 }
 
+/*!
+ * \brief Write to CAN socket with custom inputs.
+ *
+ * \param id Frame ID to write the data to
+ * \param len Length of data
+ * \param data Pointer to payload
+ * \param flags Optional flag settings
+ * \return SocketCanStatus
+ */
 SocketCanStatus SocketCan::write(const uint32_t &id, const uint8_t &len, const void *data, const uint8_t &flags) {
   struct canfd_frame frame;
   memset(&frame, 0, sizeof(frame)); /* init CAN FD frame, e.g. LEN = 0 */
@@ -139,6 +176,12 @@ SocketCanStatus SocketCan::write(const uint32_t &id, const uint8_t &len, const v
   return STATUS_OK;
 }
 
+/*!
+ * \brief Read from CAN socket.
+ *
+ * \param msg Reference to CAN frame object where data is received.
+ * \return SocketCanStatus
+ */
 SocketCanStatus SocketCan::read(CanFrame &msg) {
   struct canfd_frame frame;
 

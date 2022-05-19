@@ -21,7 +21,7 @@ int main() {
     {
       engine.Torquerequest(in_data, out_data);
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
+  //  std::this_thread::sleep_for(std::chrono::milliseconds(2));
   }
 
   can_receive_thread.join();
